@@ -30,7 +30,7 @@ def standardDeviation(times):
 
 def processForward(tasks):
     for task in tasks:
-        previousTasksIds = task["previous"]
+        previousTasksIds = toInt(task["previous"])
         minStart = 0
         times = task["times"]
 
@@ -47,10 +47,14 @@ def processForward(tasks):
         times['minEnd'] = minStart + times['tm']
 
 
+def toInt(arr):
+    return list(map(lambda char: ord(char.lower())-97, arr))
+
+
 def getOrphanedTasks(tasks):
     tasksWithParentsIds = []
     for task in tasks:
-        for taskId in task['previous']:
+        for taskId in toInt(task["previous"]):
             if taskId not in tasksWithParentsIds:
                 tasksWithParentsIds.append(taskId)
 
@@ -74,7 +78,7 @@ def handleProcessBackward(tasks):
 
 
 def processBackward(tasks, task):
-    prevs = [tasks[id] for id in task['previous']]
+    prevs = [tasks[id] for id in toInt(task["previous"])]
 
     for prev in prevs:
         print(task['taskID'], ' -> ', prev['taskID'])
