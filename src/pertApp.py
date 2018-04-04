@@ -10,8 +10,16 @@ def calculateExpected(times):
     numerator = times["tc"] + 4 * times["tm"] + times["tp"]
     return numerator/6
 
+def calculateVariation(times):
+    numerator = times["tp"] - times["tc"]
+    return (numerator/6)**2
+
+def standardDeviation(times):
+    numerator = times["tp"] + times["tc"]
+    return numerator/6
 
 if __name__ == '__main__':
     taskData = readData("tasks.json")
     for task in taskData:
         print(calculateExpected(task["times"]))
+        task["timeStart"] = 6.
