@@ -29,7 +29,7 @@ def standardDeviation(times):
 
 
 def processForward(tasks):
-    for taskId, task in enumerate(tasks):
+    for task in tasks:
         previousTasksIds = task["previous"]
         minStart = 0
         times = task["times"]
@@ -38,9 +38,10 @@ def processForward(tasks):
             minStart = tasks[previousTasksIds[0]]["times"]["minEnd"]
 
         if len(previousTasksIds) >= 2:
-            prevTasksTms = [tasks[id]['times']['minEnd']
-                            for id in previousTasksIds]
-            minStart = max(prevTasksTms)
+            prevTasksMinEnds = [tasks[id]['times']['minEnd']
+                                for id in previousTasksIds]
+            # Getting latest min end time when there are more than one "prevs"
+            minStart = max(prevTasksMinEnds)
 
         times["minStart"] = minStart
         times['minEnd'] = minStart + times['tm']
@@ -59,10 +60,17 @@ def getOrphanedTasks(tasks):
 def handleProcessBackward(tasks):
     orphanedTasks = getOrphanedTasks(tasks)
     for task in orphanedTasks:
+        # Orphaned tasks have equal max and min end time
         task['times']['maxEnd'] = task['times']['minEnd']
         task['times']['maxStart'] = task['times']['maxEnd'] - \
             task['times']['tm']
+        # Traversing through the graph from every orhpaned tasks
         processBackward(tasks, task)
+
+    # First task also has equal max and min end time
+    tasks[0]['times']['maxEnd'] = tasks[0]['times']['minEnd']
+    tasks[0]['times']['maxStart'] = tasks[0]['times']['maxEnd'] - \
+        tasks[0]['times']['tm']
 
 
 def processBackward(tasks, task):
@@ -73,7 +81,8 @@ def processBackward(tasks, task):
         nextMaxStart = task['times']['maxStart']
 
         if 'maxEnd' in prev['times']:
-            if prev['times']['maxEnd'] > nextMaxStart:
+            # Getting latest start time when there are more than one "nexts"
+            if prev['times']['maxEnd'] < nextMaxStart:
                 prev['times']['maxEnd'] = nextMaxStart
         else:
             prev['times']['maxEnd'] = nextMaxStart
@@ -81,6 +90,7 @@ def processBackward(tasks, task):
         prev['times']['maxStart'] = prev['times']['maxEnd'] - \
             prev['times']['tm']
 
+        # prev will be next for its prevs
         processBackward(tasks, prev)
 
 
