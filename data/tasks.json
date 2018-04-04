@@ -1,5 +1,4 @@
 [
-    //http://home.agh.edu.pl/~solek/wp-content/uploads/metodaPERT.pdf
     {
         "taskID": "A",
         "text": "Prace ziemne",
@@ -13,7 +12,7 @@
 
     },{
         "taskID": "B",
-        "text": "Zalanie fundamentów",
+        "text": "Zalanie fundamentow",
         "previous": ["A"],
         "times": {
             "tc": 2,
@@ -21,5 +20,28 @@
             "tp": 8,
             "timeType": "w"
         }
-    }
+    }, {
+        "taskID": "C",
+        "text": "Budowa konstrukcji nosnej",
+        "previous": [
+            "B"
+        ],
+        "times": {
+            "tc": 6,
+            "tm": 9,
+            "tp": 18,
+            "timeType": "w"
+        }
+    }, {
+        "taskID": "D",
+        "text": "Wykonanie zadaszenia",
+        "previous": [
+            "C"
+        ],
+        "times": {
+            "tc": 4,
+            "tm": 5.5,
+            "tp": 10,
+            "timeType": "w"
+        }}
 ]

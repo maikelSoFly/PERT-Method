@@ -4,7 +4,14 @@ import os
 def readData(dataName):
     dataPath = os.path.join("../data", dataName)
     with open(dataPath, 'r') as f:
-            return f.read()
+            return json.loads(f.read())
+
+def calculateExpected(times):
+    numerator = times["tc"] + 4 * times["tm"] + times["tp"]
+    return numerator/6
+
 
 if __name__ == '__main__':
-    readData("tasks.json")
+    taskData = readData("tasks.json")
+    for task in taskData:
+        print(calculateExpected(task["times"]))
