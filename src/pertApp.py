@@ -47,18 +47,18 @@ def processForward(tasks):
 
 
 def getTasksIdsWithParents(tasks):
-    tasksWithParents = []
+    tasksIdsWithParents = []
     for task in tasks:
         for taskId in task['previous']:
-            if taskId not in tasksWithParents:
-                tasksWithParents.append(taskId)
-    return tasksWithParents
+            if taskId not in tasksIdsWithParents:
+                tasksIdsWithParents.append(taskId)
+    return tasksIdsWithParents
 
 
 def handleProcessBackward(tasks):
-    tasksWithParents = getTasksIdsWithParents(tasks)
+    tasksIdsWithParents = getTasksIdsWithParents(tasks)
     for id, task in enumerate(tasks):
-        if id not in tasksWithParents:
+        if id not in tasksIdsWithParents:
             task['times']['maxEnd'] = task['times']['minEnd']
             task['times']['maxStart'] = task['times']['maxEnd'] - \
                 task['times']['tm']
