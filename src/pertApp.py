@@ -46,12 +46,39 @@ def processForward(tasks):
         times['minEnd'] = minStart + times['tm']
 
 
-# Rekurencją zrobione będzie
-def processBackward(all_tasks, task):
+def getTasksWithParents(tasks):
+    tasksWithParents = []
+    for task in tasks:
+        for taskId in task['previous']:
+            if taskId not in tasksWithParents:
+                tasksWithParents.append(taskId)
+    return tasksWithParents
+
+
+def handleProcessBackward(tasks):
+    tasksWithParents = getTasksWithParents(tasks)
+    for id, task in enumerate(tasks):
+        if id not in tasksWithParents:
+            task['times']['maxEnd'] = task['times']['minEnd']
+            task['times']['maxStart'] = task['times']['maxEnd'] - \
+                task['times']['tm']
+            processBackward(tasks, task, task)
+
+
+def processBackward(all_tasks, task, next):
     children = [all_tasks[id] for id in task['previous']]
     for child in children:
-        print(child['taskID'])
-        processBackward(all_tasks, child)
+        print(next['taskID'], ' -> ', child['taskID'])
+
+        if 'maxEnd' in child['times']:
+            if child['times']['maxEnd'] > next['times']['maxStart']:
+                child['times']['maxEnd'] = next['times']['maxStart']
+        else:
+            child['times']['maxEnd'] = next['times']['maxStart']
+
+        child['times']['maxStart'] = child['times']['maxEnd'] - \
+            child['times']['tm']
+        processBackward(all_tasks, child, child)
 
 
 # def postProcess(tasks):
@@ -61,10 +88,16 @@ if __name__ == '__main__':
 
     taskData = readData("tasks.json")
     processForward(taskData)
-    processBackward(taskData, taskData[-1])
-    # processBackward(taskData)
-    # for id, value in enumerate(taskData):
-    #     print(id, value['times']['minStart'], value['times']['minEnd'])
+    handleProcessBackward(taskData)
+
+    for id, t in enumerate(taskData):
+        print('{}.  minS: {:.2f} maxS: {:.2f} minE: {:.2f} maxE: {:.2f}'.format(
+            t['taskID'],
+            t['times']['minStart'],
+            t['times']['maxStart'],
+            t['times']['minEnd'],
+            t['times']['maxEnd']
+        ))
 
     # print(calculateExpected(value["times"]))
     # value["timeStart"] = 6.
