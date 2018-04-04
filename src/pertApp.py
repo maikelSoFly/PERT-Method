@@ -4,8 +4,10 @@ import os
 
 def readData(dataName):
     dataPath = os.path.join("../data", dataName)
+    list = []
     with open(dataPath, 'r') as f:
-        return json.loads(f.read())
+        list.extend(json.loads(f.read()).values())
+        return list
 
 
 def calculateExpected(times):
@@ -27,7 +29,7 @@ def standardDeviation(times):
 
 
 def processForward(tasks):
-    for taskId, task in tasks.items():
+    for taskId, task in enumerate(tasks):
         previousTasksIds = task["previous"]
         minStart = 0
         times = task["times"]
@@ -44,40 +46,31 @@ def processForward(tasks):
         times['minEnd'] = minStart + times['tm']
 
 
-def processBackward(tasks):
-    for taskId, task in tasks.items():
-        previousTasksIds = task["previous"]
-        maxStart = 0
-        times = task["times"]
+# Rekurencją zrobione będzie
+def processBackward(all_tasks, task):
+    children = [all_tasks[id] for id in task['previous']]
+    for child in children:
+        print(child['taskID'])
+        processBackward(all_tasks, child)
 
-        if len(previousTasksIds) == 1:
-            maxStart = times['minEnd'] - \
-                tasks[previousTasksIds[0]]["times"]["tm"]
 
-        if len(previousTasksIds) >= 2:
-            prevTasksTms = [tasks[id]['times']['tm']
-                            for id in previousTasksIds]
-            minStart = max(prevTasksTms)
-
-        times["minStart"] = minStart
-        times['minEnd'] = minStart + times['tm']
-
-        # def postProcess(tasks):
+# def postProcess(tasks):
 
 
 if __name__ == '__main__':
 
     taskData = readData("tasks.json")
     processForward(taskData)
-    for key, value in taskData.items():
-        print(key, value['times']['minStart'], value['times']['minEnd'])
+    processBackward(taskData, taskData[-1])
+    # processBackward(taskData)
+    # for id, value in enumerate(taskData):
+    #     print(id, value['times']['minStart'], value['times']['minEnd'])
 
-        # print(calculateExpected(value["times"]))
-        # value["timeStart"] = 6.
-        # calculateVariation(taskData)
-        # print(taskData)
+    # print(calculateExpected(value["times"]))
+    # value["timeStart"] = 6.
+    # calculateVariation(taskData)
+    # print(taskData)
 
-
-# docs
-# https://mfiles.pl/pl/index.php/PERT
-# https://4business4you.com/biznes/zarzadzanie-projektami/metoda-pert-w-praktyce/
+    # docs
+    # https://mfiles.pl/pl/index.php/PERT
+    # https://4business4you.com/biznes/zarzadzanie-projektami/metoda-pert-w-praktyce/
