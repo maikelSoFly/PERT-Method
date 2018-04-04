@@ -30,11 +30,29 @@ def processForward(tasks):
     for taskId, task in tasks.items():
         previousTasksIds = task["previous"]
         minStart = 0
-        minEnd = 0
         times = task["times"]
 
         if len(previousTasksIds) == 1:
-            minStart = tasks[previousTasksIds[0]]["times"]["tm"]
+            minStart = tasks[previousTasksIds[0]]["times"]["minEnd"]
+
+        if len(previousTasksIds) >= 2:
+            prevTasksTms = [tasks[id]['times']['minEnd']
+                            for id in previousTasksIds]
+            minStart = max(prevTasksTms)
+
+        times["minStart"] = minStart
+        times['minEnd'] = minStart + times['tm']
+
+
+def processBackward(tasks):
+    for taskId, task in tasks.items():
+        previousTasksIds = task["previous"]
+        maxStart = 0
+        times = task["times"]
+
+        if len(previousTasksIds) == 1:
+            maxStart = times['minEnd'] - \
+                tasks[previousTasksIds[0]]["times"]["tm"]
 
         if len(previousTasksIds) >= 2:
             prevTasksTms = [tasks[id]['times']['tm']
@@ -43,10 +61,6 @@ def processForward(tasks):
 
         times["minStart"] = minStart
         times['minEnd'] = minStart + times['tm']
-
-
-# def processBackward(tasks):
-#     for taskId, task in tasks.items():
 
         # def postProcess(tasks):
 
