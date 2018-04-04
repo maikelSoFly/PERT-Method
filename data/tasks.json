@@ -1,5 +1,5 @@
-[
-    {
+{
+    "A": {
         "taskID": "A",
         "text": "Prace ziemne",
         "previous": [],
@@ -10,7 +10,7 @@
             "timeType": "w"
         }
     },
-    {
+    "B": {
         "taskID": "B",
         "text": "Zalanie fundamentow",
         "previous": [
@@ -23,7 +23,7 @@
             "timeType": "w"
         }
     },
-    {
+    "C":{
         "taskID": "C",
         "text": "Budowa konstrukcji nosnej",
         "previous": [
@@ -36,7 +36,7 @@
             "timeType": "w"
         }
     },
-    {
+    "D":{
         "taskID": "D",
         "text": "Wykonanie zadaszenia",
         "previous": [
@@ -49,7 +49,7 @@
             "timeType": "w"
         }
     },
-    {
+    "E":{
         "taskID": "E",
         "text": "Wykonanie odwodnienia",
         "previous": [
@@ -61,7 +61,8 @@
             "tp": 5,
             "timeType": "w"
         }
-    }, {
+    }, 
+    "F":{
         "taskID": "F",
         "text": "Instalacja kanalizacji",
         "previous": [
@@ -73,7 +74,8 @@
             "tp": 10,
             "timeType": "w"
         }
-    }, {
+    }, 
+    "G":{
         "taskID": "G",
         "text": "Wykonanie ścian zewnętrznych",
         "previous": [
@@ -85,7 +87,8 @@
             "tp": 11,
             "timeType": "w"
         }
-    }, {
+    }, 
+    "H":{
         "taskID": "H",
         "text": "Prace elewacyjne",
         "previous": [
@@ -97,7 +100,8 @@
             "tp": 17,
             "timeType": "w"
         }
-    }, {
+    }, 
+    "I":{
         "taskID": "I",
         "text": "Prace elektryczne",
         "previous": [
@@ -109,7 +113,8 @@
             "tp": 9,
             "timeType": "w"
         }
-    }, {
+    }, 
+    "J":{
         "taskID": "J",
         "text": "Instalacja elementów montażowych - ściennych",
         "previous": [
@@ -121,7 +126,8 @@
             "tp": 9,
             "timeType": "w"
         }
-    }, {
+    }, 
+    "K":{
         "taskID": "K",
         "text": "Instalacje elementów montażowych - w podłożu",
         "previous": [
@@ -133,7 +139,8 @@
             "tp": 4,
             "timeType": "w"
         }
-    }, {
+    }, 
+    "L":{
         "taskID": "L",
         "text": "Wykonanie instalacji wodnej",
         "previous": [
@@ -145,7 +152,8 @@
             "tp": 7,
             "timeType": "w"
         }
-    },{
+    },
+    "M":{
         "taskID": "M",
         "text": "Instalowanie urządzen zewnętrznych",
         "previous": [
@@ -157,8 +165,9 @@
             "tp": 3,
             "timeType": "w"
         }
-    }, {
-        "taskID": "",
+    }, 
+    "N":{
+        "taskID": "N",
         "text": "Instalowanie urządzen wewnętrznych",
         "previous": [
             "K", "L"
@@ -170,4 +179,5 @@
             "timeType": "w"
         }
     }
-]
+}
+    
