@@ -46,39 +46,41 @@ def processForward(tasks):
         times['minEnd'] = minStart + times['tm']
 
 
-def getTasksIdsWithParents(tasks):
-    tasksIdsWithParents = []
+def getOrphanedTasks(tasks):
+    tasksWithParentsIds = []
     for task in tasks:
         for taskId in task['previous']:
-            if taskId not in tasksIdsWithParents:
-                tasksIdsWithParents.append(taskId)
-    return tasksIdsWithParents
+            if taskId not in tasksWithParentsIds:
+                tasksWithParentsIds.append(taskId)
+
+    return [tasks[id] for id in [item for item in range(len(tasks)) if item not in tasksWithParentsIds]]
 
 
 def handleProcessBackward(tasks):
-    tasksIdsWithParents = getTasksIdsWithParents(tasks)
-    for id, task in enumerate(tasks):
-        if id not in tasksIdsWithParents:
-            task['times']['maxEnd'] = task['times']['minEnd']
-            task['times']['maxStart'] = task['times']['maxEnd'] - \
-                task['times']['tm']
-            processBackward(tasks, task, task)
+    orphanedTasks = getOrphanedTasks(tasks)
+    for task in orphanedTasks:
+        task['times']['maxEnd'] = task['times']['minEnd']
+        task['times']['maxStart'] = task['times']['maxEnd'] - \
+            task['times']['tm']
+        processBackward(tasks, task, task)
 
 
-def processBackward(all_tasks, task, next):
-    children = [all_tasks[id] for id in task['previous']]
+def processBackward(tasks, task, next):
+    children = [tasks[id] for id in task['previous']]
     for child in children:
         print(next['taskID'], ' -> ', child['taskID'])
+        nextMaxStart = next['times']['maxStart']
 
         if 'maxEnd' in child['times']:
-            if child['times']['maxEnd'] > next['times']['maxStart']:
-                child['times']['maxEnd'] = next['times']['maxStart']
+            if child['times']['maxEnd'] > nextMaxStart:
+                child['times']['maxEnd'] = nextMaxStart
         else:
-            child['times']['maxEnd'] = next['times']['maxStart']
+            child['times']['maxEnd'] = nextMaxStart
 
         child['times']['maxStart'] = child['times']['maxEnd'] - \
             child['times']['tm']
-        processBackward(all_tasks, child, child)
+
+        processBackward(tasks, child, child)
 
 
 # def postProcess(tasks):
