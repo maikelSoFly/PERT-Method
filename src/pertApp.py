@@ -62,25 +62,26 @@ def handleProcessBackward(tasks):
         task['times']['maxEnd'] = task['times']['minEnd']
         task['times']['maxStart'] = task['times']['maxEnd'] - \
             task['times']['tm']
-        processBackward(tasks, task, task)
+        processBackward(tasks, task)
 
 
-def processBackward(tasks, task, next):
-    children = [tasks[id] for id in task['previous']]
-    for child in children:
-        print(next['taskID'], ' -> ', child['taskID'])
-        nextMaxStart = next['times']['maxStart']
+def processBackward(tasks, task):
+    prevs = [tasks[id] for id in task['previous']]
 
-        if 'maxEnd' in child['times']:
-            if child['times']['maxEnd'] > nextMaxStart:
-                child['times']['maxEnd'] = nextMaxStart
+    for prev in prevs:
+        print(task['taskID'], ' -> ', prev['taskID'])
+        nextMaxStart = task['times']['maxStart']
+
+        if 'maxEnd' in prev['times']:
+            if prev['times']['maxEnd'] > nextMaxStart:
+                prev['times']['maxEnd'] = nextMaxStart
         else:
-            child['times']['maxEnd'] = nextMaxStart
+            prev['times']['maxEnd'] = nextMaxStart
 
-        child['times']['maxStart'] = child['times']['maxEnd'] - \
-            child['times']['tm']
+        prev['times']['maxStart'] = prev['times']['maxEnd'] - \
+            prev['times']['tm']
 
-        processBackward(tasks, child, child)
+        processBackward(tasks, prev)
 
 
 # def postProcess(tasks):
@@ -92,13 +93,13 @@ if __name__ == '__main__':
     processForward(taskData)
     handleProcessBackward(taskData)
 
-    for id, t in enumerate(taskData):
+    for id, task in enumerate(taskData):
         print('{}.  minS: {:.2f} maxS: {:.2f} minE: {:.2f} maxE: {:.2f}'.format(
-            t['taskID'],
-            t['times']['minStart'],
-            t['times']['maxStart'],
-            t['times']['minEnd'],
-            t['times']['maxEnd']
+            task['taskID'],
+            task['times']['minStart'],
+            task['times']['maxStart'],
+            task['times']['minEnd'],
+            task['times']['maxEnd']
         ))
 
     # print(calculateExpected(value["times"]))
