@@ -46,7 +46,7 @@ def processForward(tasks):
         times['minEnd'] = minStart + times['tm']
 
 
-def getTasksWithParents(tasks):
+def getTasksIdsWithParents(tasks):
     tasksWithParents = []
     for task in tasks:
         for taskId in task['previous']:
