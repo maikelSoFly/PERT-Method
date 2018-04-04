@@ -1,0 +1,25 @@
+[
+    //http://home.agh.edu.pl/~solek/wp-content/uploads/metodaPERT.pdf
+    {
+        "taskID": "A",
+        "text": "Prace ziemne",
+        "previous": [],
+        "times": {
+            "tc": 1,
+            "tm": 2,
+            "tp": 3,
+            "timeType": "w"
+        }
+
+    },{
+        "taskID": "B",
+        "text": "Zalanie fundamentów",
+        "previous": ["A"],
+        "times": {
+            "tc": 2,
+            "tm": 3.5,
+            "tp": 8,
+            "timeType": "w"
+        }
+    }
+]
