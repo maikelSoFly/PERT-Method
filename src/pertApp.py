@@ -22,9 +22,18 @@ def standardDeviation(times):
     numerator = times["tp"] + times["tc"]
     return numerator/6
 
-# def 
+def processForward(tasks):
+    for taskId, task in tasks.items():
+        previousTasksIds = task["previous"]
+        minStart = None
+        if len(previousTasksIds) == 1:
+            times = task["times"]
+            
+            minStart = tasks[previousTasksIds[0]]["times"]["expected"]
+        # if len(previousTasksIds) >= 2:
+            
 
-# def processForward(tasks):
+        times["minStart"] = minStart
 
 # def processBackward(tasks):
 
@@ -35,6 +44,7 @@ if __name__ == '__main__':
     for key, value in taskData.items():
         print(calculateExpected(value["times"]))
         value["timeStart"] = 6.
+    calculateVariation(taskData)
     print(taskData)
 
 
