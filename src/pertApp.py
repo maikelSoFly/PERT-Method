@@ -56,7 +56,7 @@ def getTasksIdsWithParents(tasks):
 
 
 def handleProcessBackward(tasks):
-    tasksWithParents = getTasksWithParents(tasks)
+    tasksWithParents = getTasksIdsWithParents(tasks)
     for id, task in enumerate(tasks):
         if id not in tasksWithParents:
             task['times']['maxEnd'] = task['times']['minEnd']
