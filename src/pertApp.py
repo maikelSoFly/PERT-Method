@@ -130,7 +130,7 @@ def findCriticalPaths(tasks):
             # If current task is not "start" task,
             # continue traversing
             for child in [tasks[id] for id in toInt(task['previous'])]:
-                if visited[child['taskID']] == False:
+                if not visited[child['taskID']]:
                     traverse(child)
 
         # Remove current task from tempPath[] and mark it as unvisited
