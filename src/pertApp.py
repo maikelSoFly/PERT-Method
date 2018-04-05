@@ -113,7 +113,8 @@ def findCriticalPaths(tasks):
     paths = []
     tempPath = []
 
-    def traverse(task, visited):
+    def traverse(task):
+        nonlocal visited
         nonlocal tasks
         nonlocal paths
         nonlocal tempPath
@@ -130,7 +131,7 @@ def findCriticalPaths(tasks):
             # go on traversing
             for child in [tasks[id] for id in toInt(task['previous'])]:
                 if visited[child['taskID']] == False:
-                    traverse(child, visited)
+                    traverse(child)
 
         # Remove current task from path[] and mark it as unvisited
         tempPath.pop()
@@ -138,7 +139,7 @@ def findCriticalPaths(tasks):
 
     # Traversing through the graph from every orhpaned tasks
     for task in getOrphanedTasks(tasks):
-        traverse(task, visited)
+        traverse(task)
 
     return paths
 
