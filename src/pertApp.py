@@ -118,22 +118,22 @@ def findCriticalPaths(tasks):
         nonlocal tasks
         nonlocal paths
         nonlocal tempPath
-        # Mark the current node as visited and store in path[]
+        # Mark the current node as visited and store in tempPath[]
         visited[task['taskID']] = True
         tempPath.append(task)
 
-        # If current task is "start" task, path is
-        # finished, then check if path is critical
+        # If current task is "start" task, temp path is
+        # finished, then check if it is critical
         if len(task['previous']) == 0 and all(task['times']['slack'] == 0 for task in tempPath):
             paths.append(tempPath[:])
         else:
-            # If current task is not destination
-            # go on traversing
+            # If current task is not "start" task,
+            # continue traversing
             for child in [tasks[id] for id in toInt(task['previous'])]:
                 if visited[child['taskID']] == False:
                     traverse(child)
 
-        # Remove current task from path[] and mark it as unvisited
+        # Remove current task from tempPath[] and mark it as unvisited
         tempPath.pop()
         visited[task['taskID']] = False
 
