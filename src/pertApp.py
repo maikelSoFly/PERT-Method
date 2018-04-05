@@ -160,7 +160,7 @@ if __name__ == '__main__':
     processBackward(taskData)
 
     for id, task in enumerate(taskData):
-        print('{}.  minS: {:.2f} maxS: {:.2f} minE: {:.2f} maxE: {:.2f} slack: {:.2f}'.format(
+        print('{}.  start_min: {:.2f} start_max: {:.2f} end_min: {:.2f} end_max: {:.2f} slack: {:.2f}'.format(
             task['taskID'],
             task['times']['minStart'],
             task['times']['maxStart'],
