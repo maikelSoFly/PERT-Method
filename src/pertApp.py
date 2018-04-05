@@ -96,6 +96,14 @@ def processBackward(tasks, task):
 
         # prev will be next for its prevs
         processBackward(tasks, prev)
+    print()
+
+
+def calculateSlackTime(tasks):
+    for task in tasks:
+        endSlack = task['times']['maxEnd'] - task['times']['minEnd']
+        startSlack = task['times']['maxStart'] - task['times']['minStart']
+        task['times']['slackTime'] = min([endSlack, startSlack])
 
 
 # def postProcess(tasks):
@@ -106,14 +114,16 @@ if __name__ == '__main__':
     taskData = readData("tasks.json")
     processForward(taskData)
     handleProcessBackward(taskData)
+    calculateSlackTime(taskData)
 
     for id, task in enumerate(taskData):
-        print('{}.  minS: {:.2f} maxS: {:.2f} minE: {:.2f} maxE: {:.2f}'.format(
+        print('{}.  minS: {:.2f} maxS: {:.2f} minE: {:.2f} maxE: {:.2f} slack: {:.2f}'.format(
             task['taskID'],
             task['times']['minStart'],
             task['times']['maxStart'],
             task['times']['minEnd'],
-            task['times']['maxEnd']
+            task['times']['maxEnd'],
+            task['times']['slackTime']
         ))
 
     # print(calculateExpected(value["times"]))
