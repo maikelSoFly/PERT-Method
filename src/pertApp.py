@@ -111,20 +111,20 @@ def findCriticalPaths(tasks):
 
     # Create an array to store different paths
     paths = []
-    path = []
+    tempPath = []
 
     def traverse(task, visited):
         nonlocal tasks
         nonlocal paths
-        nonlocal path
+        nonlocal tempPath
         # Mark the current node as visited and store in path[]
         visited[task['taskID']] = True
-        path.append(task)
+        tempPath.append(task)
 
-        # If current task is start task, then
-        # path is finished
-        if len(task['previous']) == 0:
-            paths.append(path[:])
+        # If current task is "start" task, path is
+        # finished, then check if path is critical
+        if len(task['previous']) == 0 and all(task['times']['slack'] == 0 for task in tempPath):
+            paths.append(tempPath[:])
         else:
             # If current task is not destination
             # go on traversing
@@ -133,19 +133,14 @@ def findCriticalPaths(tasks):
                     traverse(child, visited)
 
         # Remove current task from path[] and mark it as unvisited
-        path.pop()
+        tempPath.pop()
         visited[task['taskID']] = False
 
     # Traversing through the graph from every orhpaned tasks
     for task in getOrphanedTasks(tasks):
         traverse(task, visited)
 
-    criticalPaths = []
-    for path in paths:
-        if all(task['times']['slack'] == 0 for task in path):
-            criticalPaths.append(path)
-
-    return criticalPaths
+    return paths
 
 
 def printCriticalPaths(paths):
