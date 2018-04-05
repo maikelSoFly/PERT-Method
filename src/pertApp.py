@@ -67,7 +67,6 @@ def processBackward(tasks):
         prevs = [tasks[id] for id in toInt(task["previous"])]
 
         for prev in prevs:
-            # print(task['taskID'], ' -> ', prev['taskID'])
             nextMaxStart = task['times']['maxStart']
 
             if 'maxEnd' in prev['times']:
