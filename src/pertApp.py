@@ -94,7 +94,7 @@ def processBackward(tasks, task):
         prev['times']['maxStart'] = prev['times']['maxEnd'] - \
             prev['times']['tm']
 
-        # prev will be next for its prevs
+        # prev will be next for its prevs 🧠
         processBackward(tasks, prev)
     print()
 
@@ -129,7 +129,6 @@ if __name__ == '__main__':
     # print(calculateExpected(value["times"]))
     # value["timeStart"] = 6.
     # calculateVariation(taskData)
-    # print(taskData)
 
     # docs
     # https://mfiles.pl/pl/index.php/PERT
