@@ -109,32 +109,32 @@ def findCriticalPaths(tasks):
     for task in tasks:
         visited[task['taskID']] = False
 
-    # Create an array to store paths
+    # Create an array to store different paths
     paths = []
     path = []
 
-    def traverse(u, visited):
+    def traverse(task, visited):
         nonlocal tasks
         nonlocal paths
         nonlocal path
-        # Mark the current node as visited and store in path
-        visited[u['taskID']] = True
-        path.append(u)
+        # Mark the current node as visited and store in path[]
+        visited[task['taskID']] = True
+        path.append(task)
 
-        # If current task is same as destination, then
+        # If current task is start task, then
         # path is finished
-        if u == tasks[0]:
+        if len(task['previous']) == 0:
             paths.append(path[:])
         else:
             # If current task is not destination
             # go on traversing
-            for task in [tasks[id] for id in toInt(u['previous'])]:
-                if visited[task['taskID']] == False:
-                    traverse(task, visited)
+            for child in [tasks[id] for id in toInt(task['previous'])]:
+                if visited[child['taskID']] == False:
+                    traverse(child, visited)
 
         # Remove current task from path[] and mark it as unvisited
         path.pop()
-        visited[u['taskID']] = False
+        visited[task['taskID']] = False
 
     # Traversing through the graph from every orhpaned tasks
     for task in getOrphanedTasks(tasks):
@@ -146,6 +146,15 @@ def findCriticalPaths(tasks):
             criticalPaths.append(path)
 
     return criticalPaths
+
+
+def printCriticalPaths(paths):
+    print('\n\nCritical paths:\n')
+    for path in paths:
+        print('START', end=' -> ')
+        for task in reversed(path):
+            print(task['taskID'], end=' -> ')
+        print('END')
 
 
 if __name__ == '__main__':
@@ -165,17 +174,7 @@ if __name__ == '__main__':
         ))
 
     criticalPaths = findCriticalPaths(taskData)
-
-    print('\n\nCritical paths:\n')
-    for path in criticalPaths:
-        print('START', end=' -> ')
-        for task in reversed(path):
-            print(task['taskID'], end=' -> ')
-        print('END')
-
-    # print(calculateExpected(value["times"]))
-    # value["timeStart"] = 6.
-    # calculateVariation(taskData)
+    printCriticalPaths(criticalPaths)
 
     # docs
     # https://mfiles.pl/pl/index.php/PERT

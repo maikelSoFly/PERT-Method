@@ -1,0 +1,146 @@
+{
+    "A": {
+        "taskID": "A",
+        "text": "Prace ziemne",
+        "previous": [],
+        "times": {
+            "tc": 1,
+            "tm": 3,
+            "tp": 3,
+            "timeType": "w"
+        }
+    },
+    "B": {
+        "taskID": "B",
+        "text": "Zalanie fundamentow",
+        "previous": [
+            "A"
+        ],
+        "times": {
+            "tc": 2,
+            "tm": 1,
+            "tp": 8,
+            "timeType": "w"
+        }
+    },
+    "C": {
+        "taskID": "C",
+        "text": "Zalanie fundamentow",
+        "previous": [
+            "A"
+        ],
+        "times": {
+            "tc": 2,
+            "tm": 3,
+            "tp": 8,
+            "timeType": "w"
+        }
+    },
+    "D": {
+        "taskID": "D",
+        "text": "Zalanie fundamentow",
+        "previous": [
+            "A"
+        ],
+        "times": {
+            "tc": 2,
+            "tm": 2,
+            "tp": 8,
+            "timeType": "w"
+        }
+    },
+    "E": {
+        "taskID": "E",
+        "text": "Zalanie fundamentow",
+        "previous": [
+            "A"
+        ],
+        "times": {
+            "tc": 2,
+            "tm": 5,
+            "tp": 8,
+            "timeType": "w"
+        }
+    },
+    "F": {
+        "taskID": "F",
+        "text": "Zalanie fundamentow",
+        "previous": [
+            "B"
+        ],
+        "times": {
+            "tc": 2,
+            "tm": 2,
+            "tp": 8,
+            "timeType": "w"
+        }
+    },
+    "G": {
+        "taskID": "G",
+        "text": "Zalanie fundamentow",
+        "previous": [
+            "C",
+            "D"
+        ],
+        "times": {
+            "tc": 2,
+            "tm": 2,
+            "tp": 8,
+            "timeType": "w"
+        }
+    },
+    "H": {
+        "taskID": "H",
+        "text": "Zalanie fundamentow",
+        "previous": [
+            "E"
+        ],
+        "times": {
+            "tc": 2,
+            "tm": 1,
+            "tp": 8,
+            "timeType": "w"
+        }
+    },
+    "I": {
+        "taskID": "I",
+        "text": "Zalanie fundamentow",
+        "previous": [
+            "F",
+            "G"
+        ],
+        "times": {
+            "tc": 2,
+            "tm": 3,
+            "tp": 8,
+            "timeType": "w"
+        }
+    },
+    "J": {
+        "taskID": "J",
+        "text": "Zalanie fundamentow",
+        "previous": [
+            "H"
+        ],
+        "times": {
+            "tc": 2,
+            "tm": 4,
+            "tp": 8,
+            "timeType": "w"
+        }
+    },
+    "K": {
+        "taskID": "K",
+        "text": "Zalanie fundamentow",
+        "previous": [
+            "I",
+            "J"
+        ],
+        "times": {
+            "tc": 2,
+            "tm": 3,
+            "tp": 8,
+            "timeType": "w"
+        }
+    }
+}
