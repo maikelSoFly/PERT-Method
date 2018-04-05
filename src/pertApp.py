@@ -61,49 +61,76 @@ def getOrphanedTasks(tasks):
     return [tasks[id] for id in [item for item in range(len(tasks)) if item not in tasksWithParentsIds]]
 
 
-def handleProcessBackward(tasks):
-    orphanedTasks = getOrphanedTasks(tasks)
-    for task in orphanedTasks:
+def processBackward(tasks):
+    def traverse(task):
+        nonlocal tasks
+        prevs = [tasks[id] for id in toInt(task["previous"])]
+
+        for prev in prevs:
+            print(task['taskID'], ' -> ', prev['taskID'])
+            nextMaxStart = task['times']['maxStart']
+
+            if 'maxEnd' in prev['times']:
+                # Getting latest start time when there are more than one "nexts"
+                if prev['times']['maxEnd'] > nextMaxStart:
+                    prev['times']['maxEnd'] = nextMaxStart
+            else:
+                prev['times']['maxEnd'] = nextMaxStart
+
+            prev['times']['maxStart'] = prev['times']['maxEnd'] - \
+                prev['times']['tm']
+
+            # prev will be next for its prevs 🧠
+            traverse(prev)
+        print()
+
+    for task in getOrphanedTasks(tasks):
         # Orphaned tasks have equal max and min end time
         task['times']['maxEnd'] = task['times']['minEnd']
         task['times']['maxStart'] = task['times']['maxEnd'] - \
             task['times']['tm']
         # Traversing through the graph from every orhpaned tasks
-        processBackward(tasks, task)
+        traverse(task)
 
     # First task also has equal max and min end time
     tasks[0]['times']['maxEnd'] = tasks[0]['times']['minEnd']
     tasks[0]['times']['maxStart'] = tasks[0]['times']['maxEnd'] - \
         tasks[0]['times']['tm']
 
-
-def processBackward(tasks, task):
-    prevs = [tasks[id] for id in toInt(task["previous"])]
-
-    for prev in prevs:
-        print(task['taskID'], ' -> ', prev['taskID'])
-        nextMaxStart = task['times']['maxStart']
-
-        if 'maxEnd' in prev['times']:
-            # Getting latest start time when there are more than one "nexts"
-            if prev['times']['maxEnd'] < nextMaxStart:
-                prev['times']['maxEnd'] = nextMaxStart
-        else:
-            prev['times']['maxEnd'] = nextMaxStart
-
-        prev['times']['maxStart'] = prev['times']['maxEnd'] - \
-            prev['times']['tm']
-
-        # prev will be next for its prevs 🧠
-        processBackward(tasks, prev)
-    print()
-
-
-def calculateSlackTime(tasks):
+    # Calculating slack time
     for task in tasks:
         endSlack = task['times']['maxEnd'] - task['times']['minEnd']
         startSlack = task['times']['maxStart'] - task['times']['minStart']
         task['times']['slack'] = min([endSlack, startSlack])
+
+
+def findCriticalPath(tasks):
+    paths = {}
+    node = None
+
+    def traverse(task):
+        prevs = [tasks[id] for id in toInt(task["previous"])]
+        nonlocal tasks
+        nonlocal node
+        nonlocal paths
+
+        if not node:
+            node = task['taskID']
+            paths[node] = []
+
+        paths[node].append(task['taskID'])
+
+        if len(prevs) == 0:
+            node = None
+
+        for prev in prevs:
+            traverse(prev)
+
+    for task in getOrphanedTasks(tasks):
+        traverse(task)
+
+    for key, value in paths.items():
+        print(key, value)
 
 
 # def postProcess(tasks):
@@ -113,8 +140,7 @@ if __name__ == '__main__':
 
     taskData = readData("tasks.json")
     processForward(taskData)
-    handleProcessBackward(taskData)
-    calculateSlackTime(taskData)
+    processBackward(taskData)
 
     for id, task in enumerate(taskData):
         print('{}.  minS: {:.2f} maxS: {:.2f} minE: {:.2f} maxE: {:.2f} slack: {:.2f}'.format(
@@ -125,6 +151,8 @@ if __name__ == '__main__':
             task['times']['maxEnd'],
             task['times']['slack']
         ))
+
+    findCriticalPath(taskData)
 
     # print(calculateExpected(value["times"]))
     # value["timeStart"] = 6.
