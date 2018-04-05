@@ -1,7 +1,7 @@
 {
     "A": {
         "taskID": "A",
-        "text": "Prace ziemne",
+        "text": "",
         "previous": [],
         "times": {
             "tc": 1,
@@ -12,7 +12,7 @@
     },
     "B": {
         "taskID": "B",
-        "text": "Zalanie fundamentow",
+        "text": "",
         "previous": [
             "A"
         ],
@@ -25,7 +25,7 @@
     },
     "C": {
         "taskID": "C",
-        "text": "Zalanie fundamentow",
+        "text": "",
         "previous": [
             "A"
         ],
@@ -38,7 +38,7 @@
     },
     "D": {
         "taskID": "D",
-        "text": "Zalanie fundamentow",
+        "text": "",
         "previous": [
             "A"
         ],
@@ -51,7 +51,7 @@
     },
     "E": {
         "taskID": "E",
-        "text": "Zalanie fundamentow",
+        "text": "",
         "previous": [
             "A"
         ],
@@ -64,7 +64,7 @@
     },
     "F": {
         "taskID": "F",
-        "text": "Zalanie fundamentow",
+        "text": "",
         "previous": [
             "B"
         ],
@@ -77,7 +77,7 @@
     },
     "G": {
         "taskID": "G",
-        "text": "Zalanie fundamentow",
+        "text": "",
         "previous": [
             "C",
             "D"
@@ -91,7 +91,7 @@
     },
     "H": {
         "taskID": "H",
-        "text": "Zalanie fundamentow",
+        "text": "",
         "previous": [
             "E"
         ],
@@ -104,7 +104,7 @@
     },
     "I": {
         "taskID": "I",
-        "text": "Zalanie fundamentow",
+        "text": "",
         "previous": [
             "F",
             "G"
@@ -118,7 +118,7 @@
     },
     "J": {
         "taskID": "J",
-        "text": "Zalanie fundamentow",
+        "text": "",
         "previous": [
             "H"
         ],
@@ -131,7 +131,7 @@
     },
     "K": {
         "taskID": "K",
-        "text": "Zalanie fundamentow",
+        "text": "",
         "previous": [
             "I",
             "J"
