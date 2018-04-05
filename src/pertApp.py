@@ -153,23 +153,26 @@ def printCriticalPaths(paths):
         print('END')
 
 
+def printTasks(tasks):
+    for task in taskData:
+        print('{}.  start_min: {:.2f} start_max: {:.2f} end_min: {:.2f} end_max: {:.2f} slack: {:.2f}'
+              .format(
+                  task['taskID'],
+                  task['times']['minStart'],
+                  task['times']['maxStart'],
+                  task['times']['minEnd'],
+                  task['times']['maxEnd'],
+                  task['times']['slack']
+              ))
+
+
 if __name__ == '__main__':
 
     taskData = readData("tasks.json")
     processForward(taskData)
     processBackward(taskData)
-
-    for id, task in enumerate(taskData):
-        print('{}.  start_min: {:.2f} start_max: {:.2f} end_min: {:.2f} end_max: {:.2f} slack: {:.2f}'.format(
-            task['taskID'],
-            task['times']['minStart'],
-            task['times']['maxStart'],
-            task['times']['minEnd'],
-            task['times']['maxEnd'],
-            task['times']['slack']
-        ))
-
     criticalPaths = findCriticalPaths(taskData)
+    printTasks(taskData)
     printCriticalPaths(criticalPaths)
 
     # docs
