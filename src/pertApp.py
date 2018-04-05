@@ -67,7 +67,7 @@ def processBackward(tasks):
         prevs = [tasks[id] for id in toInt(task["previous"])]
 
         for prev in prevs:
-            print(task['taskID'], ' -> ', prev['taskID'])
+            # print(task['taskID'], ' -> ', prev['taskID'])
             nextMaxStart = task['times']['maxStart']
 
             if 'maxEnd' in prev['times']:
@@ -82,7 +82,6 @@ def processBackward(tasks):
 
             # prev will be next for its prevs 🧠
             traverse(prev)
-        print()
 
     for task in getOrphanedTasks(tasks):
         # Orphaned tasks have equal max and min end time
@@ -104,36 +103,49 @@ def processBackward(tasks):
         task['times']['slack'] = min([endSlack, startSlack])
 
 
-def findCriticalPath(tasks):
-    paths = {}
-    node = None
+def findCriticalPaths(tasks):
+    visited = {}
+    # Mark all the tasks as not visited
+    for task in tasks:
+        visited[task['taskID']] = False
 
-    def traverse(task):
-        prevs = [tasks[id] for id in toInt(task["previous"])]
+    # Create an array to store paths
+    paths = []
+    path = []
+
+    def traverse(u, visited):
         nonlocal tasks
-        nonlocal node
         nonlocal paths
+        nonlocal path
+        # Mark the current node as visited and store in path
+        visited[u['taskID']] = True
+        path.append(u)
 
-        if not node:
-            node = task['taskID']
-            paths[node] = []
+        # If current task is same as destination, then
+        # path is finished
+        if u == tasks[0]:
+            paths.append(path[:])
+        else:
+            # If current task is not destination
+            # go on traversing
+            for task in [tasks[id] for id in toInt(u['previous'])]:
+                if visited[task['taskID']] == False:
+                    traverse(task, visited)
 
-        paths[node].append(task['taskID'])
+        # Remove current task from path[] and mark it as unvisited
+        path.pop()
+        visited[u['taskID']] = False
 
-        if len(prevs) == 0:
-            node = None
-
-        for prev in prevs:
-            traverse(prev)
-
+    # Traversing through the graph from every orhpaned tasks
     for task in getOrphanedTasks(tasks):
-        traverse(task)
+        traverse(task, visited)
 
-    for key, value in paths.items():
-        print(key, value)
+    criticalPaths = []
+    for path in paths:
+        if all(task['times']['slack'] == 0 for task in path):
+            criticalPaths.append(path)
 
-
-# def postProcess(tasks):
+    return criticalPaths
 
 
 if __name__ == '__main__':
@@ -152,7 +164,14 @@ if __name__ == '__main__':
             task['times']['slack']
         ))
 
-    findCriticalPath(taskData)
+    criticalPaths = findCriticalPaths(taskData)
+
+    print('\n\nCritical paths:\n')
+    for path in criticalPaths:
+        print('START', end=' -> ')
+        for task in reversed(path):
+            print(task['taskID'], end=' -> ')
+        print('END')
 
     # print(calculateExpected(value["times"]))
     # value["timeStart"] = 6.
