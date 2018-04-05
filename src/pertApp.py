@@ -103,7 +103,7 @@ def calculateSlackTime(tasks):
     for task in tasks:
         endSlack = task['times']['maxEnd'] - task['times']['minEnd']
         startSlack = task['times']['maxStart'] - task['times']['minStart']
-        task['times']['slackTime'] = min([endSlack, startSlack])
+        task['times']['slack'] = min([endSlack, startSlack])
 
 
 # def postProcess(tasks):
@@ -123,7 +123,7 @@ if __name__ == '__main__':
             task['times']['maxStart'],
             task['times']['minEnd'],
             task['times']['maxEnd'],
-            task['times']['slackTime']
+            task['times']['slack']
         ))
 
     # print(calculateExpected(value["times"]))
