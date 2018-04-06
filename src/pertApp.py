@@ -146,10 +146,12 @@ def findCriticalPaths(tasks):
 def printCriticalPaths(paths):
     print('\n\nCritical paths:\n')
     for path in paths:
+        duration = 0
         print('START', end=' -> ')
         for task in reversed(path):
+            duration += task['times']['tm']
             print(task['taskID'], end=' -> ')
-        print('END')
+        print('END  ({:.2f} weeks)'.format(duration))
 
 
 def printTasks(tasks):
