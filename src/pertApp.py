@@ -102,6 +102,11 @@ def processBackward(tasks):
         task['times']['slack'] = min([endSlack, startSlack])
 
 
+def PERT(tasks):
+    processForward(tasks)
+    processBackward(tasks)
+
+
 def findCriticalPaths(tasks):
     visited = {}
     # Mark all the tasks as not visited
@@ -170,8 +175,8 @@ def printTasks(tasks):
 if __name__ == '__main__':
 
     taskData = readData("tasks.json")
-    processForward(taskData)
-    processBackward(taskData)
+
+    PERT(taskData)
     criticalPaths = findCriticalPaths(taskData)
     printTasks(taskData)
     printCriticalPaths(criticalPaths)
