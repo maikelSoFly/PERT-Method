@@ -148,8 +148,7 @@ def findCriticalPaths(tasks):
     return paths
 
 
-def printCriticalPaths(paths):
-    print('\n\nCritical paths:\n')
+def printPaths(paths):
     for path in paths:
         duration = 0
         print('START', end=' -> ')
@@ -179,7 +178,8 @@ if __name__ == '__main__':
     PERT(taskData)
     criticalPaths = findCriticalPaths(taskData)
     printTasks(taskData)
-    printCriticalPaths(criticalPaths)
+    print('\n\nCritical paths:\n')
+    printPaths(criticalPaths)
 
     # docs
     # https://mfiles.pl/pl/index.php/PERT
