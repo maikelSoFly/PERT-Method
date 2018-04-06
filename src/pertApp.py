@@ -51,7 +51,7 @@ def toInt(arr):
     return list(map(lambda char: ord(char.lower())-97, arr))
 
 
-def getOrphanedTasks(tasks):
+def getOrphaned(tasks):
     tasksWithParentsIds = []
     for task in tasks:
         for taskId in toInt(task["previous"]):
@@ -82,7 +82,7 @@ def processBackward(tasks):
             # prev will be next for its prevs 🧠
             traverse(prev)
 
-    for task in getOrphanedTasks(tasks):
+    for task in getOrphaned(tasks):
         # Orphaned tasks have equal max and min end time
         task['times']['maxEnd'] = task['times']['minEnd']
         task['times']['maxStart'] = task['times']['maxEnd'] - \
@@ -142,7 +142,7 @@ def findCriticalPaths(tasks):
         visited[task['taskID']] = False
 
     # Traversing through the graph from every orhpaned tasks
-    for task in getOrphanedTasks(tasks):
+    for task in getOrphaned(tasks):
         traverse(task)
 
     return paths
