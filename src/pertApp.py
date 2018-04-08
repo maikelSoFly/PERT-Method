@@ -146,6 +146,7 @@ def findCriticalPaths(tasks, printTree=True):
     def appendTreePrint(level, task):
         nonlocal levels
         nonlocal treeStr 
+        nonlocal tempPath
         left = '\n'
         for l in range(level):
             if l in levels:
@@ -157,6 +158,10 @@ def findCriticalPaths(tasks, printTree=True):
 
         if len(task['previous']) == 0:
             treeStr += '⏤ START'
+            duration = 0
+            for task in tempPath:
+                duration += task['times']['expected']
+            treeStr += '  \t{:.1f}{}'.format(duration, task['times']['timeType'])
         
         if len(task['previous']) > 1:
             levels.append(level+1)
@@ -176,11 +181,13 @@ def findCriticalPaths(tasks, printTree=True):
 
         if printTree:
             appendTreePrint(level, task)
+            
         
         # If current task is "start" task, temp path is
         # finished, then check if it is critical
         if len(task['previous']) == 0 and all(task['times']['slack'] == 0 for task in tempPath):
             treeStr += ' 🔴'
+            
             paths.append(tempPath[:])
         else:
             
@@ -285,7 +292,7 @@ def printPaths(paths):
         for task in reversed(path):
             duration += task['times']['expected']
             print(task['taskID'], end=' ➡ ')
-        print('END     ({:.1f} weeks)'.format(duration))
+        print('END     (expecting {:.1f} weeks)'.format(duration))
 
 
 def printTasks(tasks):
