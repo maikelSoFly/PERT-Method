@@ -1,5 +1,6 @@
 import json
 import os
+from prettytable import PrettyTable
 
 
 def readData(dataName):
@@ -10,22 +11,25 @@ def readData(dataName):
         return list
 
 
-def calculateExpected(times):
-    numerator = times["tc"] + 4 * times["tm"] + times["tp"]
-    times["expected"] = numerator/6
-    return times["expected"]
+def calculateExpected(tasks):
+    for task in tasks:
+        times = task['times']
+        numerator = times["tc"] + 4 * times["tm"] + times["tp"]
+        times["expected"] = numerator/6
 
 
 def calculateVariation(tasks):
-    for key, task in tasks.items():
+    for task in tasks:
         times = task["times"]
         numerator = times["tp"] - times["tc"]
-        task["variation"] = (numerator/6)**2
+        times["variation"] = (numerator/6)**2
 
 
-def standardDeviation(times):
-    numerator = times["tp"] + times["tc"]
-    return numerator/6
+def calculateStandardDeviation(tasks):
+    for task in tasks:
+        times = task['times']
+        numerator = times["tp"] + times["tc"]
+        times['deviation'] = numerator/6
 
 
 def processForward(tasks):
@@ -44,7 +48,7 @@ def processForward(tasks):
             minStart = max(prevTasksMinEnds)
 
         times["minStart"] = minStart
-        times['minEnd'] = minStart + times['tm']
+        times['minEnd'] = minStart + times['expected']
 
 
 def toInt(arr):
@@ -68,38 +72,43 @@ def processBackward(tasks):
 
         for prev in prevs:
             nextMaxStart = task['times']['maxStart']
+            times = prev['times']
 
             if 'maxEnd' in prev['times']:
-                # Getting latest start time when there are more than one "nexts"
-                if prev['times']['maxEnd'] > nextMaxStart:
-                    prev['times']['maxEnd'] = nextMaxStart
-            else:
-                prev['times']['maxEnd'] = nextMaxStart
 
-            prev['times']['maxStart'] = prev['times']['maxEnd'] - \
-                prev['times']['tm']
+                # Getting latest start time when there are more than one "nexts"
+                if times['maxEnd'] > nextMaxStart:
+                    times['maxEnd'] = nextMaxStart
+            else:
+                times['maxEnd'] = nextMaxStart
+
+            times['maxStart'] = times['maxEnd'] - \
+                times['expected']
 
             # prev will be next for its prevs 🧠
             traverse(prev)
 
     for task in getOrphaned(tasks):
         # Orphaned tasks have equal max and min end time
-        task['times']['maxEnd'] = task['times']['minEnd']
-        task['times']['maxStart'] = task['times']['maxEnd'] - \
-            task['times']['tm']
+        times = task['times']
+        times['maxEnd'] = times['minEnd']
+        times['maxStart'] = times['maxEnd'] - \
+            times['expected']
         # Traversing through the graph from every orhpaned tasks
         traverse(task)
 
     # First task also has equal max and min end time
-    tasks[0]['times']['maxEnd'] = tasks[0]['times']['minEnd']
-    tasks[0]['times']['maxStart'] = tasks[0]['times']['maxEnd'] - \
-        tasks[0]['times']['tm']
+    times = tasks[0]['times']
+    times['maxEnd'] = times['minEnd']
+    times['maxStart'] = times['maxEnd'] - \
+        times['expected']
 
     # Calculating slack time
     for task in tasks:
-        endSlack = task['times']['maxEnd'] - task['times']['minEnd']
-        startSlack = task['times']['maxStart'] - task['times']['minStart']
-        task['times']['slack'] = min([endSlack, startSlack])
+        times = task['times']
+        endSlack = times['maxEnd'] - times['minEnd']
+        startSlack = times['maxStart'] - times['minStart']
+        times['slack'] = min([endSlack, startSlack])
 
 
 def PERT(tasks):
@@ -148,32 +157,60 @@ def findCriticalPaths(tasks):
     return paths
 
 
+def printTimes(tasks):
+    x = PrettyTable()
+
+    x.field_names = ['ID', "Optimistic", "Pessimistic",
+                     "Most-likely", "Expected", 'Deviation', 'Variation']
+
+    for task in tasks:
+        x.add_row([task['taskID'],
+                   '{:.1f}'.format(task['times']['tc']),
+                   '{:.1f}'.format(task['times']['tp']),
+                   '{:.1f}'.format(task['times']['tm']),
+                   '{:.1f}'.format(task['times']['expected']),
+                   '{:.1f}'.format(task['times']['deviation']),
+                   '{:.1f}'.format(task['times']['variation'])])
+
+    print(x, '\n\n')
+
+
 def printPaths(paths):
     for path in paths:
         duration = 0
-        print('START', end=' -> ')
+
+        print('START', end=' ➡ ')
         for task in reversed(path):
-            duration += task['times']['tm']
-            print(task['taskID'], end=' -> ')
-        print('END  ({:.2f} weeks)'.format(duration))
+            duration += task['times']['expected']
+            print(task['taskID'], end=' ➡ ')
+        print('END     ({:.1f} weeks)'.format(duration))
 
 
 def printTasks(tasks):
-    for task in taskData:
-        print('{}.  start_min: {:.2f} start_max: {:.2f} end_min: {:.2f} end_max: {:.2f} slack: {:.2f}'
-              .format(
-                  task['taskID'],
-                  task['times']['minStart'],
-                  task['times']['maxStart'],
-                  task['times']['minEnd'],
-                  task['times']['maxEnd'],
-                  task['times']['slack']
-              ))
+    x = PrettyTable()
+
+    x.field_names = ['ID', "min. Start", "max. Start",
+                     "min. End", "max. End", 'Slack']
+
+    for task in tasks:
+        x.add_row([task['taskID'],
+                   '{:.1f}'.format(task['times']['minStart']),
+                   '{:.1f}'.format(task['times']['maxStart']),
+                   '{:.1f}'.format(task['times']['minEnd']),
+                   '{:.1f}'.format(task['times']['maxEnd']),
+                   '{:.1f}'.format(task['times']['slack'])])
+
+    print(x, '\n\n')
 
 
 if __name__ == '__main__':
 
     taskData = readData("tasks.json")
+
+    calculateExpected(taskData)
+    calculateStandardDeviation(taskData)
+    calculateVariation(taskData)
+    printTimes(taskData)
 
     PERT(taskData)
     criticalPaths = findCriticalPaths(taskData)
