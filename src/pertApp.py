@@ -166,7 +166,6 @@ def findCriticalPaths(tasks, printTree=True):
         if len(task['previous']) > 1:
             levels.append(level+1)
 
-        
 
     def traverse(task, level=0):
         nonlocal visited
@@ -240,6 +239,26 @@ def printTimes(tasks):
     print(x, '\n')
 
 
+def printTasks(tasks):
+    x = PrettyTable()
+
+    x.field_names = ['ID', "min. Start", "max. Start",
+                     "min. End", "max. End", 'Slack']
+
+    for task in tasks:
+        times = task['times']
+
+        x.add_row([task['taskID'],
+                   '{:.1f}'.format(times['minStart'] if 'minStart' in times else 0),
+                   '{:.1f}'.format(times['maxStart'] if 'maxStart' in times else 0),
+                   '{:.1f}'.format(times['minEnd'] if 'minEnd' in times else 0),
+                   '{:.1f}'.format(times['maxEnd'] if 'maxEnd' in times else 0),
+                   '{:.1f}'.format(times['slack'] if 'slack' in times else 0)])
+
+    print('\n')
+    print(x, '\n\n')
+
+
 def printTasksTree(tasks, level=0):
     def traverse(task, level):
         nonlocal tasks
@@ -295,24 +314,7 @@ def printPaths(paths):
         print('END     (expecting {:.1f} weeks)'.format(duration))
 
 
-def printTasks(tasks):
-    x = PrettyTable()
 
-    x.field_names = ['ID', "min. Start", "max. Start",
-                     "min. End", "max. End", 'Slack']
-
-    for task in tasks:
-        times = task['times']
-
-        x.add_row([task['taskID'],
-                   '{:.1f}'.format(times['minStart'] if 'minStart' in times else 0),
-                   '{:.1f}'.format(times['maxStart'] if 'maxStart' in times else 0),
-                   '{:.1f}'.format(times['minEnd'] if 'minEnd' in times else 0),
-                   '{:.1f}'.format(times['maxEnd'] if 'maxEnd' in times else 0),
-                   '{:.1f}'.format(times['slack'] if 'slack' in times else 0)])
-
-    print('\n')
-    print(x, '\n\n')
 
 
 if __name__ == '__main__':
