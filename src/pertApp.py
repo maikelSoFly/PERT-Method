@@ -4,15 +4,15 @@ import os
 from prettytable import PrettyTable
 
 
-def readData(dataName, dataType='task'):
-    dataPath = os.path.join("../data", dataName)
+def readData(fileName, dataName='task'):
+    dataPath = os.path.join("../data", fileName)
     list = []
     dict = {}
     with open(dataPath, 'r') as f:
-        if dataType == 'task':
+        if dataName == 'task':
             list.extend(json.loads(f.read()).values())
             return list
-        elif dataType == 'distribution':
+        elif dataName == 'distribution':
             spamreader = csv.reader(f, delimiter=';')
             for row in spamreader:
                 dict[row[0]] = row[1]
@@ -22,6 +22,8 @@ def readData(dataName, dataType='task'):
 def calculateExpected(tasks):
     for task in tasks:
         times = task['times']
+        if 'expected' in times:
+            continue
         numerator = times["tc"] + 4 * times["tm"] + times["tp"]
         times["expected"] = numerator/6
 
@@ -29,6 +31,8 @@ def calculateExpected(tasks):
 def calculateVariation(tasks):
     for task in tasks:
         times = task["times"]
+        if 'expected' in times:
+            continue
         numerator = times["tp"] - times["tc"]
         times["variation"] = (numerator/6)**2
 
@@ -36,6 +40,8 @@ def calculateVariation(tasks):
 def calculateStandardDeviation(tasks):
     for task in tasks:
         times = task['times']
+        if 'expected' in times:
+            continue
         numerator = times["tp"] + times["tc"]
         times['deviation'] = numerator/6
 
@@ -172,13 +178,15 @@ def printTimes(tasks):
                      "Most-likely", "Expected", 'Deviation', 'Variation']
 
     for task in tasks:
+        times = task['times']
+
         x.add_row([task['taskID'],
-                   '{:.1f}'.format(task['times']['tc']),
-                   '{:.1f}'.format(task['times']['tp']),
-                   '{:.1f}'.format(task['times']['tm']),
-                   '{:.1f}'.format(task['times']['expected']),
-                   '{:.1f}'.format(task['times']['deviation']),
-                   '{:.1f}'.format(task['times']['variation'])])
+                   '{:.1f}'.format(times['tc'] if 'tc' in times else 0),
+                   '{:.1f}'.format(times['tp'] if 'tp' in times else 0),
+                   '{:.1f}'.format(times['tm'] if 'tm' in times else 0),
+                   '{:.1f}'.format(times['expected'] if 'expected' in times else 0),
+                   '{:.1f}'.format(times['deviation'] if 'deviation' in times else 0),
+                   '{:.1f}'.format(times['variation'] if 'variation' in times else 0)])
 
     print(x, '\n\n')
 
@@ -201,12 +209,14 @@ def printTasks(tasks):
                      "min. End", "max. End", 'Slack']
 
     for task in tasks:
+        times = task['times']
+
         x.add_row([task['taskID'],
-                   '{:.1f}'.format(task['times']['minStart']),
-                   '{:.1f}'.format(task['times']['maxStart']),
-                   '{:.1f}'.format(task['times']['minEnd']),
-                   '{:.1f}'.format(task['times']['maxEnd']),
-                   '{:.1f}'.format(task['times']['slack'])])
+                   '{:.1f}'.format(times['minStart'] if 'minStart' in times else 0),
+                   '{:.1f}'.format(times['maxStart'] if 'maxStart' in times else 0),
+                   '{:.1f}'.format(times['minEnd'] if 'minEnd' in times else 0),
+                   '{:.1f}'.format(times['maxEnd'] if 'maxEnd' in times else 0),
+                   '{:.1f}'.format(times['slack'] if 'slack' in times else 0)])
 
     print(x, '\n\n')
 
@@ -215,7 +225,7 @@ if __name__ == '__main__':
 
     taskData = readData("tasks.json")
     # N(0,1)
-    distr = readData('normal-distribution-table.csv', dataType='distribution')
+    distr = readData('normal-distribution-table.csv', dataName='distribution')
     # print(distr['-3.73'])
 
     """ 
@@ -231,6 +241,7 @@ if __name__ == '__main__':
             
         Prawdopodobieństwo zakończenia przedsięwzięcia w terminie do td:
 
+            P(td ≤ tr) = ϕ(x)
             ϕ(x) = 1 - ϕ(-x)
 
     """
@@ -243,7 +254,7 @@ if __name__ == '__main__':
     PERT(taskData)
     criticalPaths = findCriticalPaths(taskData)
     printTasks(taskData)
-    print('\n\nCritical paths:\n')
+    print('Critical paths:\n')
     printPaths(criticalPaths)
 
     # docs
