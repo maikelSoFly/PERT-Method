@@ -214,8 +214,26 @@ def printTasks(tasks):
 if __name__ == '__main__':
 
     taskData = readData("tasks.json")
+    # N(0,1)
     distr = readData('normal-distribution-table.csv', dataType='distribution')
     # print(distr['-3.73'])
+
+    """ 
+        Dane należy przeksalować w taki sposób, aby posiadały wartość średnią 
+        równą 0 i odchylenie standardowe równe 1.
+
+            X = (td - tr) / σ
+
+                X - czas przeskalowany do N(0,1)
+                td - czas dyrektywny 🤔
+                tr - czas modelowy ukończenia przedsięwzięcia 🤔
+                σ - odchylenie standardowe
+            
+        Prawdopodobieństwo zakończenia przedsięwzięcia w terminie do td:
+        
+            ϕ(x) = 1 - ϕ(-x)
+
+    """
 
     calculateExpected(taskData)
     calculateStandardDeviation(taskData)
