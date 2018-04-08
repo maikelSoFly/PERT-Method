@@ -1,14 +1,22 @@
 import json
+import csv
 import os
 from prettytable import PrettyTable
 
 
-def readData(dataName):
+def readData(dataName, dataType='task'):
     dataPath = os.path.join("../data", dataName)
     list = []
+    dict = {}
     with open(dataPath, 'r') as f:
-        list.extend(json.loads(f.read()).values())
-        return list
+        if dataType == 'task':
+            list.extend(json.loads(f.read()).values())
+            return list
+        elif dataType == 'distribution':
+            spamreader = csv.reader(f, delimiter=';')
+            for row in spamreader:
+                dict[row[0]] = row[1]
+            return dict
 
 
 def calculateExpected(tasks):
@@ -206,6 +214,8 @@ def printTasks(tasks):
 if __name__ == '__main__':
 
     taskData = readData("tasks.json")
+    distr = readData('normal-distribution-table.csv', dataType='distribution')
+    # print(distr['-3.73'])
 
     calculateExpected(taskData)
     calculateStandardDeviation(taskData)

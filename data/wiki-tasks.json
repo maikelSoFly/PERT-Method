@@ -4,9 +4,7 @@
         "text": "",
         "previous": [],
         "times": {
-            "tc": 1,
-            "tm": 3,
-            "tp": 3,
+            "expected": 3,
             "timeType": "w"
         }
     },
@@ -17,9 +15,7 @@
             "A"
         ],
         "times": {
-            "tc": 2,
-            "tm": 1,
-            "tp": 8,
+            "expected": 1,
             "timeType": "w"
         }
     },
@@ -30,9 +26,7 @@
             "A"
         ],
         "times": {
-            "tc": 2,
-            "tm": 3,
-            "tp": 8,
+            "expected": 3,
             "timeType": "w"
         }
     },
@@ -43,9 +37,7 @@
             "A"
         ],
         "times": {
-            "tc": 2,
-            "tm": 2,
-            "tp": 8,
+            "expected": 2,
             "timeType": "w"
         }
     },
@@ -56,9 +48,7 @@
             "A"
         ],
         "times": {
-            "tc": 2,
-            "tm": 5,
-            "tp": 8,
+            "expected": 5,
             "timeType": "w"
         }
     },
@@ -69,9 +59,7 @@
             "B"
         ],
         "times": {
-            "tc": 2,
-            "tm": 2,
-            "tp": 8,
+            "expected": 2,
             "timeType": "w"
         }
     },
@@ -83,9 +71,7 @@
             "D"
         ],
         "times": {
-            "tc": 2,
-            "tm": 2,
-            "tp": 8,
+            "expected": 2,
             "timeType": "w"
         }
     },
@@ -96,9 +82,7 @@
             "E"
         ],
         "times": {
-            "tc": 2,
-            "tm": 1,
-            "tp": 8,
+            "expected": 1,
             "timeType": "w"
         }
     },
@@ -110,9 +94,7 @@
             "G"
         ],
         "times": {
-            "tc": 2,
-            "tm": 3,
-            "tp": 8,
+            "expected": 3,
             "timeType": "w"
         }
     },
@@ -123,9 +105,7 @@
             "H"
         ],
         "times": {
-            "tc": 2,
-            "tm": 4,
-            "tp": 8,
+            "expected": 4,
             "timeType": "w"
         }
     },
@@ -137,9 +117,7 @@
             "J"
         ],
         "times": {
-            "tc": 2,
-            "tm": 3,
-            "tp": 8,
+            "expected": 3,
             "timeType": "w"
         }
     }
