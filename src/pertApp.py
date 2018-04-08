@@ -152,8 +152,8 @@ def findCriticalPaths(tasks, printTree=True):
                 left += '│'
             else:
                 left += ' '
-
-        treeStr += left+'└'+task['taskID']
+        forkChar = '├' if level in levels else '└'
+        treeStr += left+forkChar+task['taskID']
 
         if len(task['previous']) == 0:
             treeStr += '⏤ START'
@@ -245,8 +245,8 @@ def printTasksTree(tasks, level=0):
                 left += '│'
             else:
                 left += ' '
-
-        ret += left+'└'+task['taskID']
+        forkChar = '├' if level in levels else '└'
+        ret += left+forkChar+task['taskID']
         prevs = [tasks[id] for id in toInt(task["previous"])]
 
         if len(prevs) == 0:
@@ -310,7 +310,7 @@ def printTasks(tasks):
 
 if __name__ == '__main__':
 
-    taskData = readData("tasks.json")
+    taskData = readData("wiki-tasks.json")
     # N(0,1)
     distr = readData('normal-distribution-table.csv', dataName='distribution')
     # print(distr['-3.73'])
