@@ -6,6 +6,7 @@ from prettytable import PrettyTable
 
 def readData(fileName, dataName='task'):
     dataPath = os.path.join("../data", fileName)
+    print('Reading from: ', dataPath)
     list = []
     dict = {}
     with open(dataPath, 'r') as f:
@@ -130,7 +131,7 @@ def PERT(tasks):
     processBackward(tasks)
 
 
-def findCriticalPaths(tasks):
+def findCriticalPaths(tasks, printTree=True):
     visited = {}
     # Mark all the tasks as not visited
     for task in tasks:
@@ -139,35 +140,75 @@ def findCriticalPaths(tasks):
     # Create an array to store different paths
     paths = []
     tempPath = []
+    levels = [] # for printing tree
+    treeStr = '\nEND'
 
-    def traverse(task):
+    def appendTreePrint(level, task):
+        nonlocal levels
+        nonlocal treeStr 
+        left = '\n'
+        for l in range(level):
+            if l in levels:
+                left += '│'
+            else:
+                left += ' '
+
+        treeStr += left+'└'+task['taskID']
+
+        if len(task['previous']) == 0:
+            treeStr += '⏤ START'
+        
+        if len(task['previous']) > 1:
+            levels.append(level+1)
+
+        
+
+    def traverse(task, level=0):
         nonlocal visited
         nonlocal tasks
         nonlocal paths
         nonlocal tempPath
+        nonlocal treeStr
+        nonlocal printTree
         # Mark the current node as visited and store in tempPath[]
         visited[task['taskID']] = True
         tempPath.append(task)
 
+        if printTree:
+            appendTreePrint(level, task)
+        
         # If current task is "start" task, temp path is
         # finished, then check if it is critical
         if len(task['previous']) == 0 and all(task['times']['slack'] == 0 for task in tempPath):
+            treeStr += ' 🔴'
             paths.append(tempPath[:])
         else:
+            
             # If current task is not "start" task,
             # continue traversing
             for child in [tasks[id] for id in toInt(task['previous'])]:
                 if not visited[child['taskID']]:
-                    traverse(child)
+                    traverse(child, level+1)
 
         # Remove current task from tempPath[] and mark it as unvisited
         tempPath.pop()
         visited[task['taskID']] = False
+       #
+        if printTree and level in levels:
+            levels.remove(level)
 
     # Traversing through the graph from every orhpaned tasks
-    for task in getOrphaned(tasks):
-        traverse(task)
+    orphaned = getOrphaned(tasks) 
 
+    if printTree and len(orphaned) > 1:
+        levels.append(0)
+
+    for task in orphaned:
+        treeStr += '\n│\n│'
+        traverse(task)
+    
+    if printTree:
+        print(treeStr)
     return paths
 
 
@@ -187,11 +228,56 @@ def printTimes(tasks):
                    '{:.1f}'.format(times['expected'] if 'expected' in times else 0),
                    '{:.1f}'.format(times['deviation'] if 'deviation' in times else 0),
                    '{:.1f}'.format(times['variation'] if 'variation' in times else 0)])
+    
+    print('\n')
+    print(x, '\n')
 
-    print(x, '\n\n')
+
+def printTasksTree(tasks, level=0):
+    def traverse(task, level):
+        nonlocal tasks
+        nonlocal levels
+        nonlocal ret
+
+        left = '\n'
+        for l in range(level):
+            if l in levels:
+                left += '│'
+            else:
+                left += ' '
+
+        ret += left+'└'+task['taskID']
+        prevs = [tasks[id] for id in toInt(task["previous"])]
+
+        if len(prevs) == 0:
+            ret += '⏤ START'
+        #
+        if len(prevs) > 1:
+            levels.append(level+1)
+
+        for child in prevs:
+            traverse(child, level+1)
+            
+        if level in levels:
+            levels.remove(level)
+    
+    levels = []
+    ret = '\nEND'
+    
+    orphaned = getOrphaned(tasks) 
+
+    if len(orphaned) > 1:
+        levels.append(0)
+
+    for task in orphaned:
+        ret += '\n│\n│'
+        traverse(task, level)
+
+    print(ret)
 
 
 def printPaths(paths):
+    print('\n')
     for path in paths:
         duration = 0
 
@@ -218,6 +304,7 @@ def printTasks(tasks):
                    '{:.1f}'.format(times['maxEnd'] if 'maxEnd' in times else 0),
                    '{:.1f}'.format(times['slack'] if 'slack' in times else 0)])
 
+    print('\n')
     print(x, '\n\n')
 
 
@@ -246,15 +333,16 @@ if __name__ == '__main__':
 
     """
 
+    #printTasksTree(taskData)
     calculateExpected(taskData)
     calculateStandardDeviation(taskData)
     calculateVariation(taskData)
     printTimes(taskData)
 
     PERT(taskData)
-    criticalPaths = findCriticalPaths(taskData)
     printTasks(taskData)
-    print('Critical paths:\n')
+    print('Critical paths:')
+    criticalPaths = findCriticalPaths(taskData)
     printPaths(criticalPaths)
 
     # docs
