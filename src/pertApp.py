@@ -219,7 +219,7 @@ if __name__ == '__main__':
     # print(distr['-3.73'])
 
     """ 
-        Dane należy przeksalować w taki sposób, aby posiadały wartość średnią 
+        Dane należy przeskalować w taki sposób, aby posiadały wartość średnią 
         równą 0 i odchylenie standardowe równe 1.
 
             X = (td - tr) / σ
@@ -230,7 +230,7 @@ if __name__ == '__main__':
                 σ - odchylenie standardowe
             
         Prawdopodobieństwo zakończenia przedsięwzięcia w terminie do td:
-        
+
             ϕ(x) = 1 - ϕ(-x)
 
     """
