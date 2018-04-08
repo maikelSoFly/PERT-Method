@@ -140,20 +140,20 @@ def findCriticalPaths(tasks, printTree=True):
     # Create an array to store different paths
     paths = []
     tempPath = []
-    levels = [] # for printing tree
+    forkLevels = [] # for printing tree
     treeStr = '\nEND'
 
     def appendTreePrint(level, task):
-        nonlocal levels
+        nonlocal forkLevels
         nonlocal treeStr 
         nonlocal tempPath
         left = '\n'
         for l in range(level):
-            if l in levels:
+            if l in forkLevels:
                 left += '│'
             else:
                 left += ' '
-        forkChar = '├' if level in levels else '└'
+        forkChar = '├' if level in forkLevels else '└'
         treeStr += left+forkChar+task['taskID']
 
         if len(task['previous']) == 0:
@@ -164,7 +164,7 @@ def findCriticalPaths(tasks, printTree=True):
             treeStr += '  \t{:.1f}{}'.format(duration, task['times']['timeType'])
         
         if len(task['previous']) > 1:
-            levels.append(level+1)
+            forkLevels.append(level+1)
 
 
     def traverse(task, level=0):
@@ -200,14 +200,14 @@ def findCriticalPaths(tasks, printTree=True):
         tempPath.pop()
         visited[task['taskID']] = False
        #
-        if printTree and level in levels:
-            levels.remove(level)
+        if printTree and level in forkLevels:
+            forkLevels.remove(level)
 
     # Traversing through the graph from every orhpaned tasks
     orphaned = getOrphaned(tasks) 
 
     if printTree and len(orphaned) > 1:
-        levels.append(0)
+        forkLevels.append(0)
 
     for task in orphaned:
         treeStr += '\n│\n│'
@@ -262,16 +262,16 @@ def printTasks(tasks):
 def printTasksTree(tasks, level=0):
     def traverse(task, level):
         nonlocal tasks
-        nonlocal levels
+        nonlocal forkLevels
         nonlocal ret
 
         left = '\n'
         for l in range(level):
-            if l in levels:
+            if l in forkLevels:
                 left += '│'
             else:
                 left += ' '
-        forkChar = '├' if level in levels else '└'
+        forkChar = '├' if level in forkLevels else '└'
         ret += left+forkChar+task['taskID']
         prevs = [tasks[id] for id in toInt(task["previous"])]
 
@@ -279,21 +279,21 @@ def printTasksTree(tasks, level=0):
             ret += '⏤ START'
         #
         if len(prevs) > 1:
-            levels.append(level+1)
+            forkLevels.append(level+1)
 
         for child in prevs:
             traverse(child, level+1)
             
-        if level in levels:
-            levels.remove(level)
+        if level in forkLevels:
+            forkLevels.remove(level)
     
-    levels = []
+    forkLevels = []
     ret = '\nEND'
     
     orphaned = getOrphaned(tasks) 
 
     if len(orphaned) > 1:
-        levels.append(0)
+        forkLevels.append(0)
 
     for task in orphaned:
         ret += '\n│\n│'
