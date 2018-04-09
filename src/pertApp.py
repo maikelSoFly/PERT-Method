@@ -4,9 +4,22 @@ import os
 from prettytable import PrettyTable
 
 
+class bc:
+    HEADER = '\033[95;1m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    COMMENT = '\033[90m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    BOLDFAIL = '\033[41;1m'
+    UNDERLINE = '\033[4m'
+
+
 def readData(fileName, dataName='task'):
     dataPath = os.path.join("../data", fileName)
-    print('Reading from: ', dataPath)
+    print(bc.WARNING+'[!] Reading from: '+bc.ENDC, dataPath)
     list = []
     dict = {}
     with open(dataPath, 'r') as f:
@@ -154,14 +167,7 @@ def findCriticalPaths(tasks, printTree=True):
             else:
                 left += ' '
         forkChar = '├' if level in forkLevels else '└'
-        treeStr += left+forkChar+task['taskID']
-
-        if len(task['previous']) == 0:
-            treeStr += '⏤ START'
-            duration = 0
-            for task in tempPath:
-                duration += task['times']['expected']
-            treeStr += '  \t{:.1f}{}'.format(duration, task['times']['timeType'])
+        treeStr += left+forkChar+bc.BOLD+task['taskID']+bc.ENDC
         
         if len(task['previous']) > 1:
             forkLevels.append(level+1)
@@ -181,15 +187,19 @@ def findCriticalPaths(tasks, printTree=True):
         if printTree:
             appendTreePrint(level, task)
             
-        
         # If current task is "start" task, temp path is
         # finished, then check if it is critical
-        if len(task['previous']) == 0 and all(task['times']['slack'] == 0 for task in tempPath):
-            treeStr += ' 🔴'
-            
-            paths.append(tempPath[:])
+        if len(task['previous']) == 0:
+            if all(task['times']['slack'] == 0 for task in tempPath):
+                paths.append(tempPath[:])
+                treeStr += '⏤ '+bc.BOLDFAIL+'START'+bc.ENDC
+            else:
+                treeStr += '⏤ START'
+            duration = 0
+            for task in tempPath:
+                duration += task['times']['expected']
+            treeStr += bc.COMMENT+'  \t{:.1f}{}'.format(duration, task['times']['timeType'])+bc.ENDC
         else:
-            
             # If current task is not "start" task,
             # continue traversing
             for child in [tasks[id] for id in toInt(task['previous'])]:
@@ -227,7 +237,7 @@ def printTimes(tasks):
     for task in tasks:
         times = task['times']
 
-        x.add_row([task['taskID'],
+        x.add_row([bc.BOLD+task['taskID']+bc.ENDC,
                    '{:.1f}'.format(times['tc'] if 'tc' in times else 0),
                    '{:.1f}'.format(times['tp'] if 'tp' in times else 0),
                    '{:.1f}'.format(times['tm'] if 'tm' in times else 0),
@@ -248,7 +258,7 @@ def printTasks(tasks):
     for task in tasks:
         times = task['times']
 
-        x.add_row([task['taskID'],
+        x.add_row([bc.BOLD+task['taskID']+bc.ENDC,
                    '{:.1f}'.format(times['minStart'] if 'minStart' in times else 0),
                    '{:.1f}'.format(times['maxStart'] if 'maxStart' in times else 0),
                    '{:.1f}'.format(times['minEnd'] if 'minEnd' in times else 0),
@@ -272,7 +282,7 @@ def printTasksTree(tasks, level=0):
             else:
                 left += ' '
         forkChar = '├' if level in forkLevels else '└'
-        ret += left+forkChar+task['taskID']
+        ret += left+forkChar+bc.BOLD+task['taskID']+bc.ENDC
         prevs = [tasks[id] for id in toInt(task["previous"])]
 
         if len(prevs) == 0:
@@ -310,8 +320,8 @@ def printPaths(paths):
         print('START', end=' ➡ ')
         for task in reversed(path):
             duration += task['times']['expected']
-            print(task['taskID'], end=' ➡ ')
-        print('END     (expecting {:.1f} weeks)'.format(duration))
+            print(bc.BOLD+task['taskID']+bc.ENDC, end=' ➡ ')
+        print('END     '+bc.COMMENT+'(expecting {:.1f} weeks)'.format(duration)+bc.ENDC)
 
 
 
@@ -350,7 +360,7 @@ if __name__ == '__main__':
 
     PERT(taskData)
     printTasks(taskData)
-    print('Critical paths:')
+    print(bc.HEADER + 'Critical paths:' + bc.ENDC)
     criticalPaths = findCriticalPaths(taskData)
     printPaths(criticalPaths)
 
