@@ -1,5 +1,6 @@
 import json
 import csv
+import sys
 import os
 from prettytable import PrettyTable
 from math import sqrt
@@ -350,8 +351,8 @@ def toDistrDictKey(value):
         return str
 
 
-def calculateProbability(directiveTime, criticalPath, tasks, distr):
-    modelTime = max(getModelTimes(tasks))
+def calculateProbability(directiveTime, criticalPath, distr):
+    modelTime = criticalPath[0]['times']['maxEnd']
     totalVariation = calculateTotalVariation(criticalPath)
     if modelTime == -1 or totalVariation == -1:
         return -1
@@ -394,9 +395,13 @@ if __name__ == '__main__':
     print(bc.HEADER + 'Critical paths:' + bc.ENDC)
     criticalPaths = findCriticalPaths(taskData)
     printPaths(criticalPaths)
+    # Sort by longest duration (?)
+    criticalPaths = sorted(criticalPaths, key=lambda x: x[0]['times']['maxEnd'], reverse=True)
 
     directiveTime = 43
-    probability = calculateProbability(directiveTime, criticalPaths[-1], taskData, distr)
+    directiveTime = int(input(bc.BOLD+'\nDirective time: '+bc.ENDC))
+   
+    probability = calculateProbability(directiveTime, criticalPaths[0], distr)
     print(bc.HEADER+'\n\nProbability of finalizing project in'+bc.ENDC+bc.BOLD+
             ' {:d} weeks:'.format(directiveTime)+bc.ENDC)
     print(bc.WARNING+'\t{:.2f}%\n'.format(probability*100)+bc.ENDC)
