@@ -350,9 +350,9 @@ def toDistrDictKey(value):
         return str
 
 
-def calculateProbability(directiveTime, tasks, distr):
+def calculateProbability(directiveTime, criticalPath, tasks, distr):
     modelTime = max(getModelTimes(tasks))
-    totalVariation = calculateTotalVariation(tasks)
+    totalVariation = calculateTotalVariation(criticalPath)
     if modelTime == -1 or totalVariation == -1:
         return -1
     scaledTime = (directiveTime - modelTime)/sqrt(totalVariation)
@@ -396,7 +396,7 @@ if __name__ == '__main__':
     printPaths(criticalPaths)
 
     directiveTime = 43
-    probability = calculateProbability(directiveTime, taskData, distr)
+    probability = calculateProbability(directiveTime, criticalPaths[-1], taskData, distr)
     print(bc.HEADER+'\n\nProbability of finalizing project in'+bc.ENDC+bc.BOLD+
             ' {:d} weeks:'.format(directiveTime)+bc.ENDC)
     print(bc.WARNING+'\t{:.2f}%\n'.format(probability*100)+bc.ENDC)
