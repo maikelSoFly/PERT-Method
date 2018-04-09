@@ -212,14 +212,17 @@ def findCriticalPaths(tasks, printTree=True):
         if len(task['previous']) == 0:
             if all(task['times']['slack'] == 0 for task in tempPath):
                 paths.append(tempPath[:])
-                treeStr += '⏤ '+bc.BOLDFAIL+'START'+bc.ENDC
-            else:
+                if printTree:
+                    treeStr += '⏤ '+bc.BOLDFAIL+'START'+bc.ENDC
+            elif printTree:
                 treeStr += '⏤ START'
-            duration = 0
-            for task in tempPath:
-                duration += task['times']['expected']
-            treeStr += bc.COMMENT+'  \t{:.1f}{}'.format(duration, task['times']['timeType']) \
-                    +bc.ENDC
+            if printTree:
+                duration = 0
+                for task in tempPath:
+                    duration += task['times']['expected']
+            
+                treeStr += bc.COMMENT+'  \t{:.1f}{}'.format(duration, task['times']['timeType']) \
+                        +bc.ENDC
         else:
             # If current task is not "start" task,
             # continue traversing
