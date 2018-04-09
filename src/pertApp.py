@@ -398,7 +398,6 @@ if __name__ == '__main__':
     # Sort by longest duration (?)
     criticalPaths = sorted(criticalPaths, key=lambda x: x[0]['times']['maxEnd'], reverse=True)
 
-    directiveTime = 43
     directiveTime = int(input(bc.BOLD+'\nDirective time: '+bc.ENDC))
    
     probability = calculateProbability(directiveTime, criticalPaths[0], distr)
