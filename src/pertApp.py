@@ -154,7 +154,7 @@ def findCriticalPaths(tasks, printTree=True):
     paths = []
     tempPath = []
     forkLevels = [] # for printing tree
-    treeStr = '\nEND'
+    treeStr = '\nEND\n│'
 
     def appendTreePrint(level, task):
         nonlocal forkLevels
@@ -220,7 +220,7 @@ def findCriticalPaths(tasks, printTree=True):
         forkLevels.append(0)
 
     for task in orphaned:
-        treeStr += '\n│\n│'
+        treeStr += '\n│'
         traverse(task)
     
     if printTree:
@@ -238,12 +238,12 @@ def printTimes(tasks):
         times = task['times']
 
         x.add_row([bc.BOLD+task['taskID']+bc.ENDC,
-                   '{:.1f}'.format(times['tc'] if 'tc' in times else 0),
-                   '{:.1f}'.format(times['tp'] if 'tp' in times else 0),
-                   '{:.1f}'.format(times['tm'] if 'tm' in times else 0),
-                   '{:.1f}'.format(times['expected'] if 'expected' in times else 0),
-                   '{:.1f}'.format(times['deviation'] if 'deviation' in times else 0),
-                   '{:.1f}'.format(times['variation'] if 'variation' in times else 0)])
+                   '{:.1f}'.format(times['tc'] if 'tc' in times else -1),
+                   '{:.1f}'.format(times['tp'] if 'tp' in times else -1),
+                   '{:.1f}'.format(times['tm'] if 'tm' in times else -1),
+                   '{:.1f}'.format(times['expected'] if 'expected' in times else -1),
+                   '{:.1f}'.format(times['deviation'] if 'deviation' in times else -1),
+                   '{:.1f}'.format(times['variation'] if 'variation' in times else -1)])
     
     print('\n')
     print(x, '\n')
@@ -259,11 +259,11 @@ def printTasks(tasks):
         times = task['times']
 
         x.add_row([bc.BOLD+task['taskID']+bc.ENDC,
-                   '{:.1f}'.format(times['minStart'] if 'minStart' in times else 0),
-                   '{:.1f}'.format(times['maxStart'] if 'maxStart' in times else 0),
-                   '{:.1f}'.format(times['minEnd'] if 'minEnd' in times else 0),
-                   '{:.1f}'.format(times['maxEnd'] if 'maxEnd' in times else 0),
-                   '{:.1f}'.format(times['slack'] if 'slack' in times else 0)])
+                   '{:.1f}'.format(times['minStart'] if 'minStart' in times else -1),
+                   '{:.1f}'.format(times['maxStart'] if 'maxStart' in times else -1),
+                   '{:.1f}'.format(times['minEnd'] if 'minEnd' in times else -1),
+                   '{:.1f}'.format(times['maxEnd'] if 'maxEnd' in times else -1),
+                   '{:.1f}'.format(times['slack'] if 'slack' in times else -1)])
 
     print('\n')
     print(x, '\n\n')
@@ -298,7 +298,7 @@ def printTasksTree(tasks, level=0):
             forkLevels.remove(level)
     
     forkLevels = []
-    ret = '\nEND'
+    ret = '\nEND\n│'
     
     orphaned = getOrphaned(tasks) 
 
@@ -306,7 +306,7 @@ def printTasksTree(tasks, level=0):
         forkLevels.append(0)
 
     for task in orphaned:
-        ret += '\n│\n│'
+        ret += '\n│'
         traverse(task, level)
 
     print(ret)
@@ -352,7 +352,7 @@ if __name__ == '__main__':
 
     """
 
-    #printTasksTree(taskData)
+    printTasksTree(taskData)
     calculateExpected(taskData)
     calculateStandardDeviation(taskData)
     calculateVariation(taskData)
