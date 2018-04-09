@@ -37,7 +37,7 @@ def readData(fileName, dataName='task'):
 def calculateExpected(tasks):
     for task in tasks:
         times = task['times']
-        if 'expected' in times:
+        if 'expected' in times or 'tm' not in times or 'tp' not in times:
             continue
         numerator = times["tc"] + 4 * times["tm"] + times["tp"]
         times["expected"] = numerator/6
@@ -46,6 +46,8 @@ def calculateExpected(tasks):
 def calculateVariation(tasks):
     for task in tasks:
         times = task["times"]
+        if 'tp' not in times or 'tc' not in times:
+            return -1
         numerator = times["tp"] - times["tc"]
         times["variation"] = (numerator/6)**2
 
@@ -53,6 +55,8 @@ def calculateVariation(tasks):
 def calculateStandardDeviation(tasks):
     for task in tasks:
         times = task['times']
+        if 'tp' not in times or 'tc' not in times:
+            return -1
         numerator = times["tp"] + times["tc"]
         times['deviation'] = numerator/6
 
@@ -60,6 +64,8 @@ def calculateStandardDeviation(tasks):
 def calculateTotalVariation(criticalPath):
     total = 0
     for task in criticalPath:
+        if 'variation' not in task['times']:
+            return -1
         total += task['times']['variation']
 
     return total
@@ -70,7 +76,7 @@ def getModelTimes(tasks):
     for task in getOrphaned(tasks):
         modelTimes.append(task['times']['maxEnd'])
 
-    return modelTimes
+    return modelTimes if len(modelTimes) > 0 else [-1]
 
 
 def processForward(tasks):
@@ -211,7 +217,8 @@ def findCriticalPaths(tasks, printTree=True):
             duration = 0
             for task in tempPath:
                 duration += task['times']['expected']
-            treeStr += bc.COMMENT+'  \t{:.1f}{}'.format(duration, task['times']['timeType'])+bc.ENDC
+            treeStr += bc.COMMENT+'  \t{:.1f}{}'.format(duration, task['times']['timeType']) \
+                    +bc.ENDC
         else:
             # If current task is not "start" task,
             # continue traversing
@@ -336,7 +343,7 @@ def printPaths(paths):
         print('END     '+bc.COMMENT+'(expecting {:.1f} weeks)'.format(duration)+bc.ENDC)
 
 
-def toDictKey(value):
+def toDistrDictKey(value):
         str = ('{:.2f}'.format(value)).rstrip('0')
         if str[-1] == '.': 
             str = str[:-1]
@@ -346,22 +353,25 @@ def toDictKey(value):
 def calculateProbability(directiveTime, tasks, distr):
     modelTime = max(getModelTimes(tasks))
     totalVariation = calculateTotalVariation(tasks)
+    if modelTime == -1 or totalVariation == -1:
+        return -1
     scaledTime = (directiveTime - modelTime)/sqrt(totalVariation)
 
+    # Cannot get outside of N(0,1) x's range
     if scaledTime > 3.89:
         return 1
     elif scaledTime < -3.89:
         return 0
     
     probability = 0
-    x = toDictKey(scaledTime)
+    x = toDistrDictKey(scaledTime)
+    # '>' because distr dataset is already 'mirrored'
     if scaledTime > 0:
         probability = 1 - float(distr[x])
     else:
         probability = float(distr[x])
     
     return probability
-
 
 
 
@@ -373,25 +383,7 @@ if __name__ == '__main__':
     distr = readData('normal-distribution-table.csv', dataName='distribution')
     # print(distr['-3.73'])
 
-    """ 
-        Dane należy przeskalować w taki sposób, aby posiadały wartość średnią 
-        równą 0 i odchylenie standardowe równe 1.
-
-            X = (td - tr) / σ
-
-                X - czas przeskalowany do N(0,1)
-                td - czas dyrektywny 🤔
-                tr - czas modelowy ukończenia przedsięwzięcia 🤔
-                σ - odchylenie standardowe
-            
-        Prawdopodobieństwo zakończenia przedsięwzięcia w terminie do td:
-
-            P(td ≤ tr) = ϕ(x)
-            ϕ(x) = 1 - ϕ(-x)
-
-    """
-
-    printTasksTree(taskData)
+    #printTasksTree(taskData)
     calculateExpected(taskData)
     calculateStandardDeviation(taskData)
     calculateVariation(taskData)
@@ -405,11 +397,32 @@ if __name__ == '__main__':
 
     directiveTime = 43
     probability = calculateProbability(directiveTime, taskData, distr)
-    print(bc.HEADER+'\n\nProbability of finalizing project in {:d} weeks:'.format(directiveTime)+bc.ENDC)
-    print(bc.WARNING+'\t{:.3f}%\n'.format(probability*100)+bc.ENDC)
+    print(bc.HEADER+'\n\nProbability of finalizing project in'+bc.ENDC+bc.BOLD+
+            ' {:d} weeks:'.format(directiveTime)+bc.ENDC)
+    print(bc.WARNING+'\t{:.2f}%\n'.format(probability*100)+bc.ENDC)
 
    
+
     # docs
     # https://mfiles.pl/pl/index.php/PERT
     # https://4business4you.com/biznes/zarzadzanie-projektami/metoda-pert-w-praktyce/
-    # http://staff.uz.zgora.pl/mpatan/materialy/badoper/wyklady/druk_6z.pdf
+    # 
+    # http://staff.uz.zgora.pl/mpatan/materialy/badoper/wyklady/druk_6z.pdf  !!!
+
+
+    """ 
+        Dane należy przeskalować w taki sposób, aby posiadały wartość średnią 
+        równą 0 i odchylenie standardowe równe 1.
+
+            X = (td - tr) / σ
+
+                X - czas przeskalowany do N(0,1)
+                td - czas dyrektywny 
+                tr - czas modelowy ukończenia przedsięwzięcia 
+                σ - odchylenie standardowe
+            
+        Prawdopodobieństwo zakończenia przedsięwzięcia w terminie do td:
+
+            P(td ≤ tr) = ϕ(x)
+            ϕ(x) = 1 - ϕ(-x)
+    """
