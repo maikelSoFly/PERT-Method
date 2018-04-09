@@ -2,6 +2,7 @@ import json
 import csv
 import os
 from prettytable import PrettyTable
+from math import sqrt
 
 
 class bc:
@@ -45,8 +46,6 @@ def calculateExpected(tasks):
 def calculateVariation(tasks):
     for task in tasks:
         times = task["times"]
-        if 'expected' in times:
-            continue
         numerator = times["tp"] - times["tc"]
         times["variation"] = (numerator/6)**2
 
@@ -54,10 +53,24 @@ def calculateVariation(tasks):
 def calculateStandardDeviation(tasks):
     for task in tasks:
         times = task['times']
-        if 'expected' in times:
-            continue
         numerator = times["tp"] + times["tc"]
         times['deviation'] = numerator/6
+
+
+def calculateTotalVariation(criticalPath):
+    total = 0
+    for task in criticalPath:
+        total += task['times']['variation']
+
+    return total
+
+
+def getModelTimes(tasks):
+    modelTimes = []
+    for task in getOrphaned(tasks):
+        modelTimes.append(task['times']['maxEnd'])
+
+    return modelTimes
 
 
 def processForward(tasks):
@@ -236,7 +249,6 @@ def printTimes(tasks):
 
     for task in tasks:
         times = task['times']
-
         x.add_row([bc.BOLD+task['taskID']+bc.ENDC,
                    '{:.1f}'.format(times['tc'] if 'tc' in times else -1),
                    '{:.1f}'.format(times['tp'] if 'tp' in times else -1),
@@ -324,12 +336,39 @@ def printPaths(paths):
         print('END     '+bc.COMMENT+'(expecting {:.1f} weeks)'.format(duration)+bc.ENDC)
 
 
+def toDictKey(value):
+        str = ('{:.2f}'.format(value)).rstrip('0')
+        if str[-1] == '.': 
+            str = str[:-1]
+        return str
+
+
+def calculateProbability(directiveTime, tasks, distr):
+    modelTime = max(getModelTimes(tasks))
+    totalVariation = calculateTotalVariation(tasks)
+    scaledTime = (directiveTime - modelTime)/sqrt(totalVariation)
+
+    if scaledTime > 3.89:
+        return 1
+    elif scaledTime < -3.89:
+        return 0
+    
+    probability = 0
+    x = toDictKey(scaledTime)
+    if scaledTime > 0:
+        probability = 1 - float(distr[x])
+    else:
+        probability = float(distr[x])
+    
+    return probability
+
+
 
 
 
 if __name__ == '__main__':
 
-    taskData = readData("wiki-tasks.json")
+    taskData = readData("tasks.json")
     # N(0,1)
     distr = readData('normal-distribution-table.csv', dataName='distribution')
     # print(distr['-3.73'])
@@ -364,6 +403,13 @@ if __name__ == '__main__':
     criticalPaths = findCriticalPaths(taskData)
     printPaths(criticalPaths)
 
+    directiveTime = 43
+    probability = calculateProbability(directiveTime, taskData, distr)
+    print(bc.HEADER+'\n\nProbability of finalizing project in {:d} weeks:'.format(directiveTime)+bc.ENDC)
+    print(bc.WARNING+'\t{:.3f}%\n'.format(probability*100)+bc.ENDC)
+
+   
     # docs
     # https://mfiles.pl/pl/index.php/PERT
     # https://4business4you.com/biznes/zarzadzanie-projektami/metoda-pert-w-praktyce/
+    # http://staff.uz.zgora.pl/mpatan/materialy/badoper/wyklady/druk_6z.pdf
