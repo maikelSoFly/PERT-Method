@@ -378,6 +378,23 @@ def calculateProbability(directiveTime, criticalPath, distr):
     return probability
 
 
+def findLongestPath(paths): 
+    longestTime = 0
+    ret = {}
+
+    for path in paths:
+        current = 0
+        for task in path:
+            current += task['times']['expected']
+        if current > longestTime:
+            longest = current
+            ret['path'] = path
+            ret['duration'] = longest
+    
+    return ret
+    
+
+
 
 
 if __name__ == '__main__':
@@ -397,13 +414,14 @@ if __name__ == '__main__':
     printTasks(taskData)
     print(bc.HEADER + 'Critical paths:' + bc.ENDC)
     criticalPaths = findCriticalPaths(taskData)
-    printPaths(criticalPaths)
+    longestCriticalPath = findLongestPath(criticalPaths)
+    printPaths([longestCriticalPath['path']])
     # Sort by longest duration (?)
-    criticalPaths = sorted(criticalPaths, key=lambda x: x[0]['times']['maxEnd'], reverse=True)
+    
 
     directiveTime = int(input(bc.BOLD+'\nDirective time: '+bc.ENDC))
    
-    probability = calculateProbability(directiveTime, criticalPaths[0], distr)
+    probability = calculateProbability(directiveTime, longestCriticalPath['path'], distr)
     print(bc.HEADER+'\n\nProbability of finalizing project in'+bc.ENDC+bc.BOLD+
             ' {:d} weeks:'.format(directiveTime)+bc.ENDC)
     print(bc.WARNING+'\t{:.2f}%\n'.format(probability*100)+bc.ENDC)
