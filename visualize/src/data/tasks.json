@@ -1,185 +1,469 @@
 {
-    "A": {
-        "taskID": "A",
-        "text": "Prace ziemne",
-        "previous": [],
-        "times": {
-            "tc": 1,
-            "tm": 2,
-            "tp": 3,
-            "timeType": "w"
+    "taskData": [
+        {
+            "taskID": "A",
+            "text": "Prace ziemne",
+            "previous": [],
+            "times": {
+                "tc": 1,
+                "tm": 2,
+                "tp": 3,
+                "timeType": "w",
+                "expected": 2.0,
+                "deviation": 0.6666666666666666,
+                "variation": 0.1111111111111111,
+                "minStart": 0,
+                "minEnd": 2.0,
+                "maxEnd": 2.0,
+                "maxStart": 0.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "B",
+            "text": "Zalanie fundamentow",
+            "previous": [
+                "A"
+            ],
+            "times": {
+                "tc": 2,
+                "tm": 3.5,
+                "tp": 8,
+                "timeType": "w",
+                "expected": 4.0,
+                "deviation": 1.6666666666666667,
+                "variation": 1.0,
+                "minStart": 2.0,
+                "minEnd": 6.0,
+                "maxEnd": 6.0,
+                "maxStart": 2.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "C",
+            "text": "Budowa konstrukcji nosnej",
+            "previous": [
+                "B"
+            ],
+            "times": {
+                "tc": 6,
+                "tm": 9,
+                "tp": 18,
+                "timeType": "w",
+                "expected": 10.0,
+                "deviation": 4.0,
+                "variation": 4.0,
+                "minStart": 6.0,
+                "minEnd": 16.0,
+                "maxEnd": 16.0,
+                "maxStart": 6.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "D",
+            "text": "Wykonanie zadaszenia",
+            "previous": [
+                "C"
+            ],
+            "times": {
+                "tc": 4,
+                "tm": 5.5,
+                "tp": 10,
+                "timeType": "w",
+                "expected": 6.0,
+                "deviation": 2.3333333333333335,
+                "variation": 1.0,
+                "minStart": 16.0,
+                "minEnd": 22.0,
+                "maxEnd": 22.0,
+                "maxStart": 16.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "E",
+            "text": "Wykonanie odwodnienia",
+            "previous": [
+                "C"
+            ],
+            "times": {
+                "tc": 1,
+                "tm": 4.5,
+                "tp": 5,
+                "timeType": "w",
+                "expected": 4.0,
+                "deviation": 1.0,
+                "variation": 0.4444444444444444,
+                "minStart": 16.0,
+                "minEnd": 20.0,
+                "maxEnd": 20.0,
+                "maxStart": 16.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "F",
+            "text": "Instalacja kanalizacji",
+            "previous": [
+                "E"
+            ],
+            "times": {
+                "tc": 4,
+                "tm": 4,
+                "tp": 10,
+                "timeType": "w",
+                "expected": 5.0,
+                "deviation": 2.3333333333333335,
+                "variation": 1.0,
+                "minStart": 20.0,
+                "minEnd": 25.0,
+                "maxEnd": 25.0,
+                "maxStart": 20.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "G",
+            "text": "Wykonanie \u00c5\u203acian zewn\u00c4\u2122trznych",
+            "previous": [
+                "D"
+            ],
+            "times": {
+                "tc": 5,
+                "tm": 6.5,
+                "tp": 11,
+                "timeType": "w",
+                "expected": 7.0,
+                "deviation": 2.6666666666666665,
+                "variation": 1.0,
+                "minStart": 22.0,
+                "minEnd": 29.0,
+                "maxEnd": 29.0,
+                "maxStart": 22.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "H",
+            "text": "Prace elewacyjne",
+            "previous": [
+                "E",
+                "G"
+            ],
+            "times": {
+                "tc": 5,
+                "tm": 8,
+                "tp": 17,
+                "timeType": "w",
+                "expected": 9.0,
+                "deviation": 3.6666666666666665,
+                "variation": 4.0,
+                "minStart": 29.0,
+                "minEnd": 38.0,
+                "maxEnd": 38.0,
+                "maxStart": 29.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "I",
+            "text": "Prace elektryczne",
+            "previous": [
+                "C"
+            ],
+            "times": {
+                "tc": 3,
+                "tm": 7.5,
+                "tp": 9,
+                "timeType": "w",
+                "expected": 7.0,
+                "deviation": 2.0,
+                "variation": 1.0,
+                "minStart": 16.0,
+                "minEnd": 23.0,
+                "maxEnd": 25.0,
+                "maxStart": 18.0,
+                "slack": 2.0
+            }
+        },
+        {
+            "taskID": "J",
+            "text": "Instalacja element\u00c3\u00b3w monta\u00c5\u00bcowych - \u00c5\u203aciennych",
+            "previous": [
+                "F",
+                "I"
+            ],
+            "times": {
+                "tc": 3,
+                "tm": 9,
+                "tp": 9,
+                "timeType": "w",
+                "expected": 8.0,
+                "deviation": 2.0,
+                "variation": 1.0,
+                "minStart": 25.0,
+                "minEnd": 33.0,
+                "maxEnd": 33.0,
+                "maxStart": 25.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "K",
+            "text": "Instalacje element\u00c3\u00b3w monta\u00c5\u00bcowych - w pod\u00c5\u201ao\u00c5\u00bcu",
+            "previous": [
+                "J"
+            ],
+            "times": {
+                "tc": 4,
+                "tm": 4,
+                "tp": 4,
+                "timeType": "w",
+                "expected": 4.0,
+                "deviation": 1.3333333333333333,
+                "variation": 0.0,
+                "minStart": 33.0,
+                "minEnd": 37.0,
+                "maxEnd": 38.0,
+                "maxStart": 34.0,
+                "slack": 1.0
+            }
+        },
+        {
+            "taskID": "L",
+            "text": "Wykonanie instalacji wodnej",
+            "previous": [
+                "J"
+            ],
+            "times": {
+                "tc": 1,
+                "tm": 5.5,
+                "tp": 7,
+                "timeType": "w",
+                "expected": 5.0,
+                "deviation": 1.3333333333333333,
+                "variation": 1.0,
+                "minStart": 33.0,
+                "minEnd": 38.0,
+                "maxEnd": 38.0,
+                "maxStart": 33.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "M",
+            "text": "Instalowanie urz\u00c4\u2026dzen zewn\u00c4\u2122trznych",
+            "previous": [
+                "H"
+            ],
+            "times": {
+                "tc": 1,
+                "tm": 2,
+                "tp": 3,
+                "timeType": "w",
+                "expected": 2.0,
+                "deviation": 0.6666666666666666,
+                "variation": 0.1111111111111111,
+                "minStart": 38.0,
+                "minEnd": 40.0,
+                "maxEnd": 40.0,
+                "maxStart": 38.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "N",
+            "text": "Instalowanie urz\u00c4\u2026dzen wewn\u00c4\u2122trznych",
+            "previous": [
+                "K",
+                "L"
+            ],
+            "times": {
+                "tc": 5,
+                "tm": 5.5,
+                "tp": 9,
+                "timeType": "w",
+                "expected": 6.0,
+                "deviation": 2.3333333333333335,
+                "variation": 0.4444444444444444,
+                "minStart": 38.0,
+                "minEnd": 44.0,
+                "maxEnd": 44.0,
+                "maxStart": 38.0,
+                "slack": 0.0
+            }
         }
-    },
-    "B": {
-        "taskID": "B",
-        "text": "Zalanie fundamentow",
-        "previous": [
-            "A"
-        ],
-        "times": {
-            "tc": 2,
-            "tm": 3.5,
-            "tp": 8,
-            "timeType": "w"
+    ],
+    "criticalPath": [
+        {
+            "taskID": "N",
+            "text": "Instalowanie urz\u00c4\u2026dzen wewn\u00c4\u2122trznych",
+            "previous": [
+                "K",
+                "L"
+            ],
+            "times": {
+                "tc": 5,
+                "tm": 5.5,
+                "tp": 9,
+                "timeType": "w",
+                "expected": 6.0,
+                "deviation": 2.3333333333333335,
+                "variation": 0.4444444444444444,
+                "minStart": 38.0,
+                "minEnd": 44.0,
+                "maxEnd": 44.0,
+                "maxStart": 38.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "L",
+            "text": "Wykonanie instalacji wodnej",
+            "previous": [
+                "J"
+            ],
+            "times": {
+                "tc": 1,
+                "tm": 5.5,
+                "tp": 7,
+                "timeType": "w",
+                "expected": 5.0,
+                "deviation": 1.3333333333333333,
+                "variation": 1.0,
+                "minStart": 33.0,
+                "minEnd": 38.0,
+                "maxEnd": 38.0,
+                "maxStart": 33.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "J",
+            "text": "Instalacja element\u00c3\u00b3w monta\u00c5\u00bcowych - \u00c5\u203aciennych",
+            "previous": [
+                "F",
+                "I"
+            ],
+            "times": {
+                "tc": 3,
+                "tm": 9,
+                "tp": 9,
+                "timeType": "w",
+                "expected": 8.0,
+                "deviation": 2.0,
+                "variation": 1.0,
+                "minStart": 25.0,
+                "minEnd": 33.0,
+                "maxEnd": 33.0,
+                "maxStart": 25.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "F",
+            "text": "Instalacja kanalizacji",
+            "previous": [
+                "E"
+            ],
+            "times": {
+                "tc": 4,
+                "tm": 4,
+                "tp": 10,
+                "timeType": "w",
+                "expected": 5.0,
+                "deviation": 2.3333333333333335,
+                "variation": 1.0,
+                "minStart": 20.0,
+                "minEnd": 25.0,
+                "maxEnd": 25.0,
+                "maxStart": 20.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "E",
+            "text": "Wykonanie odwodnienia",
+            "previous": [
+                "C"
+            ],
+            "times": {
+                "tc": 1,
+                "tm": 4.5,
+                "tp": 5,
+                "timeType": "w",
+                "expected": 4.0,
+                "deviation": 1.0,
+                "variation": 0.4444444444444444,
+                "minStart": 16.0,
+                "minEnd": 20.0,
+                "maxEnd": 20.0,
+                "maxStart": 16.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "C",
+            "text": "Budowa konstrukcji nosnej",
+            "previous": [
+                "B"
+            ],
+            "times": {
+                "tc": 6,
+                "tm": 9,
+                "tp": 18,
+                "timeType": "w",
+                "expected": 10.0,
+                "deviation": 4.0,
+                "variation": 4.0,
+                "minStart": 6.0,
+                "minEnd": 16.0,
+                "maxEnd": 16.0,
+                "maxStart": 6.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "B",
+            "text": "Zalanie fundamentow",
+            "previous": [
+                "A"
+            ],
+            "times": {
+                "tc": 2,
+                "tm": 3.5,
+                "tp": 8,
+                "timeType": "w",
+                "expected": 4.0,
+                "deviation": 1.6666666666666667,
+                "variation": 1.0,
+                "minStart": 2.0,
+                "minEnd": 6.0,
+                "maxEnd": 6.0,
+                "maxStart": 2.0,
+                "slack": 0.0
+            }
+        },
+        {
+            "taskID": "A",
+            "text": "Prace ziemne",
+            "previous": [],
+            "times": {
+                "tc": 1,
+                "tm": 2,
+                "tp": 3,
+                "timeType": "w",
+                "expected": 2.0,
+                "deviation": 0.6666666666666666,
+                "variation": 0.1111111111111111,
+                "minStart": 0,
+                "minEnd": 2.0,
+                "maxEnd": 2.0,
+                "maxStart": 0.0,
+                "slack": 0.0
+            }
         }
-    },
-    "C": {
-        "taskID": "C",
-        "text": "Budowa konstrukcji nosnej",
-        "previous": [
-            "B"
-        ],
-        "times": {
-            "tc": 6,
-            "tm": 9,
-            "tp": 18,
-            "timeType": "w"
-        }
-    },
-    "D": {
-        "taskID": "D",
-        "text": "Wykonanie zadaszenia",
-        "previous": [
-            "C"
-        ],
-        "times": {
-            "tc": 4,
-            "tm": 5.5,
-            "tp": 10,
-            "timeType": "w"
-        }
-    },
-    "E": {
-        "taskID": "E",
-        "text": "Wykonanie odwodnienia",
-        "previous": [
-            "C"
-        ],
-        "times": {
-            "tc": 1,
-            "tm": 4.5,
-            "tp": 5,
-            "timeType": "w"
-        }
-    },
-    "F": {
-        "taskID": "F",
-        "text": "Instalacja kanalizacji",
-        "previous": [
-            "E"
-        ],
-        "times": {
-            "tc": 4,
-            "tm": 4,
-            "tp": 10,
-            "timeType": "w"
-        }
-    },
-    "G": {
-        "taskID": "G",
-        "text": "Wykonanie ścian zewnętrznych",
-        "previous": [
-            "D"
-        ],
-        "times": {
-            "tc": 5,
-            "tm": 6.5,
-            "tp": 11,
-            "timeType": "w"
-        }
-    },
-    "H": {
-        "taskID": "H",
-        "text": "Prace elewacyjne",
-        "previous": [
-            "E",
-            "G"
-        ],
-        "times": {
-            "tc": 5,
-            "tm": 8,
-            "tp": 17,
-            "timeType": "w"
-        }
-    },
-    "I": {
-        "taskID": "I",
-        "text": "Prace elektryczne",
-        "previous": [
-            "C"
-        ],
-        "times": {
-            "tc": 3,
-            "tm": 7.5,
-            "tp": 9,
-            "timeType": "w"
-        }
-    },
-    "J": {
-        "taskID": "J",
-        "text": "Instalacja elementów montażowych - ściennych",
-        "previous": [
-            "F",
-            "I"
-        ],
-        "times": {
-            "tc": 3,
-            "tm": 9,
-            "tp": 9,
-            "timeType": "w"
-        }
-    },
-    "K": {
-        "taskID": "K",
-        "text": "Instalacje elementów montażowych - w podłożu",
-        "previous": [
-            "J"
-        ],
-        "times": {
-            "tc": 4,
-            "tm": 4,
-            "tp": 4,
-            "timeType": "w"
-        }
-    },
-    "L": {
-        "taskID": "L",
-        "text": "Wykonanie instalacji wodnej",
-        "previous": [
-            "J"
-        ],
-        "times": {
-            "tc": 1,
-            "tm": 5.5,
-            "tp": 7,
-            "timeType": "w"
-        }
-    },
-    "M": {
-        "taskID": "M",
-        "text": "Instalowanie urządzen zewnętrznych",
-        "previous": [
-            "H"
-        ],
-        "times": {
-            "tc": 1,
-            "tm": 2,
-            "tp": 3,
-            "timeType": "w"
-        }
-    },
-    "N": {
-        "taskID": "N",
-        "text": "Instalowanie urządzen wewnętrznych",
-        "previous": [
-            "K",
-            "L"
-        ],
-        "times": {
-            "tc": 5,
-            "tm": 5.5,
-            "tp": 9,
-            "timeType": "w"
-        }
-    }
+    ]
 }

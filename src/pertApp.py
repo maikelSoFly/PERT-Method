@@ -19,6 +19,16 @@ class bc:
     UNDERLINE = '\033[4m'
 
 
+def saveToJson(taskData, longestPath):
+    # print(taskData)
+    # print(longestPath)
+    outputObj = json.dumps({"taskData": taskData, "criticalPath": longestPath})
+    with open("..\\visualize\\src\\data\\tasks.json", "w") as f:
+        f.write(outputObj)
+        f.close()
+    # outputObj = {taskData: taskData, longestPath: [longestPath]}
+    print(outputObj)
+
 def readData(fileName, dataName='task'):
     dataPath = os.path.join("../data", fileName)
     print(bc.WARNING+'[!] Reading from: '+bc.ENDC, dataPath)
@@ -426,6 +436,7 @@ if __name__ == '__main__':
             ' {:d} weeks:'.format(directiveTime)+bc.ENDC)
     print(bc.WARNING+'\t{:.2f}%\n'.format(probability*100)+bc.ENDC)
 
+    saveToJson(taskData, longestCriticalPath['path'])
    
 
     # docs
